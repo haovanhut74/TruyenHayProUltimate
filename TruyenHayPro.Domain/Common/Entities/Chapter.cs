@@ -1,4 +1,5 @@
-﻿using TruyenHayPro.Domain.Common.Models;
+﻿using System;
+using TruyenHayPro.Domain.Common.Models;
 
 namespace TruyenHayPro.Domain.Common.Entities;
 
@@ -12,5 +13,5 @@ public class Chapter : BaseAuditableEntity
     public int OrderIndex { get; set; }
 
     public Guid NovelId { get; set; }
-    public Novel Novel { get; set; } 
+    public Novel Novel { get; set; }
 }

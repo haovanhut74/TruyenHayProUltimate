@@ -1,4 +1,6 @@
-﻿using TruyenHayPro.Domain.Common.Models;
+﻿using System;
+using System.Collections.Generic;
+using TruyenHayPro.Domain.Common.Models;
 using TruyenHayPro.Domain.Enums;
 
 namespace TruyenHayPro.Domain.Common.Entities;
@@ -16,4 +18,6 @@ public class Novel : BaseAuditableEntity
     public double Rating { get; set; } = 0;
 
     public ICollection<Chapter> Chapters { get; set; } = new List<Chapter>();
+    public Guid CategoryId { get; set; }
+    public Category Category { get; set; }
 }
