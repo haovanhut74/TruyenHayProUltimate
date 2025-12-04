@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TruyenHayPro.Domain.Common.Models;
+﻿namespace TruyenHayPro.Domain.Common.Models;
 
 //Thời gian trường hà
 public abstract class BaseAuditableEntity

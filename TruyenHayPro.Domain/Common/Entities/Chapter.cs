@@ -1,5 +1,4 @@
-﻿using System;
-using TruyenHayPro.Domain.Common.Models;
+﻿using TruyenHayPro.Domain.Common.Models;
 
 namespace TruyenHayPro.Domain.Common.Entities;
 

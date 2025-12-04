@@ -8,4 +8,6 @@ public interface INovelService
     Task<List<NovelDto>> GetNovelsHomeAsync(int count);
 
     Task<NovelDto?> GetNovelByIdAsync(Guid id);
+    
+    Task<Guid> CreateNovelAsync(CreateNovelDto dto);
 }

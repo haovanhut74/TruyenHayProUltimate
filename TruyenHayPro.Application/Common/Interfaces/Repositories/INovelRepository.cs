@@ -13,4 +13,6 @@ public interface INovelRepository
     // Đầu vào: id (mã truyện)
     // Đầu ra: Một cuốn Novel (hoặc null nếu không tìm thấy)
     Task<Novel?> GetNovelByIdAsync(Guid id);
+    
+    Task<Guid> AddAsync(Novel novel);
 }

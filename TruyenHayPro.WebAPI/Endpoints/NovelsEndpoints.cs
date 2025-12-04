@@ -1,4 +1,5 @@
 ﻿using TruyenHayPro.Application.Common.Interfaces.Services;
+using TruyenHayPro.Application.DTO;
 
 namespace TruyenHayPro.WebAPI.Endpoints;
 
@@ -17,6 +18,9 @@ public static class NovelsEndpoints
         // 2. API: Lấy chi tiết truyện
         // GET /api/novels/{id}
         group.MapGet("{id:guid}", GetNovelById);
+
+        // POST: /api/novels
+        group.MapPost("/", CreateNovel);
     }
     // --- CÁC HÀM XỬ LÝ (HANDLERS) ---
 
@@ -33,5 +37,12 @@ public static class NovelsEndpoints
         var novel = await novelService.GetNovelByIdAsync(id);
 
         return novel == null ? Results.NotFound() : Results.Ok(novel);
+    }
+
+    // --- HÀM XỬ LÝ ---
+    static async Task<IResult> CreateNovel(CreateNovelDto dto, INovelService service)
+    {
+        var id = await service.CreateNovelAsync(dto);
+        return Results.Ok(id);
     }
 }

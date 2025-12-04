@@ -10,7 +10,9 @@ public class ApplicationDbContext : DbContext
     //Khai báo các DbSet ở đây
     public DbSet<Novel> Novels { get; set; }
     public DbSet<Chapter> Chapters { get; set; }
-
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

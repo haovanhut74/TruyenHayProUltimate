@@ -2,11 +2,11 @@
 
 namespace TruyenHayPro.Domain.Common.Entities;
 
-public class Category : BaseAuditableEntity
+public class Tag : BaseAuditableEntity
 {
-    public string Name { get; set; } = "Tên thể loại";
+    public string Name { get; set; } 
     public string? Description { get; set; }
 
-    // Quan hệ: Một thể loại chứa danh sách các truyện
+    // Quan hệ Nhiều - Nhiều: Một Tag gắn cho nhiều Novel
     public ICollection<Novel> Novels { get; set; } = new List<Novel>();
 }

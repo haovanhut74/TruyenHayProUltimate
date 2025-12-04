@@ -33,4 +33,11 @@ public class NovelRepository : INovelRepository
             .Include(n => n.Chapters) // Nạp luôn Danh sách chương
             .FirstOrDefaultAsync(n => n.Id == id);
     }
+    
+    public async Task<Guid> AddAsync(Novel novel)
+    {
+        _context.Novels.Add(novel);
+        await _context.SaveChangesAsync();
+        return novel.Id;
+    }
 }
