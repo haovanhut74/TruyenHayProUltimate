@@ -1,0 +1,31 @@
+﻿@inject IJSRuntime JS
+<button class="theme-btn" @onclick="ToggleTheme" title="Đổi giao diện">
+    @if (isDark)
+    {
+        <i class="bi bi-moon-stars-fill"></i> }
+    else
+    {
+        <i class="bi bi-sun-fill text-warning"></i> }
+</button>
+
+@code {
+    private bool isDark = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Hỏi JS xem đang là theme gì để hiện icon cho đúng
+            var theme = await JS.InvokeAsync<string>("getThemeJS");
+            isDark = theme == "dark";
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        // Gọi JS để đổi màu
+        var newTheme = await JS.InvokeAsync<string>("toggleThemeJS");
+        isDark = newTheme == "dark";
+    }
+}

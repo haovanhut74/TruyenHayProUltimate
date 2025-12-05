@@ -1,0 +1,19 @@
+﻿.theme-btn {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 1.1rem;
+}
+
+.theme-btn:hover {
+    background: var(--hover-bg);
+    transform: rotate(15deg);
+}

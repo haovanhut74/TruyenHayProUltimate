@@ -9,4 +9,5 @@ public class NovelDto
     public string Description { get; set; } = string.Empty;
     public string StatusName { get; set; } = string.Empty;
     public string CategoryName { get; set; } = string.Empty;
+    public double Rating { get; set; }
 }

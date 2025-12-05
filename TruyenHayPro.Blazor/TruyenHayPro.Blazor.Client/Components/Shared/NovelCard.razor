@@ -1,0 +1,48 @@
+﻿@using System.Globalization
+@using TruyenHayPro.Application.DTO
+
+<div class = "novel-card">
+    <div class = "card-image-wrapper">
+        <img
+            src = "@(string.IsNullOrEmpty(Novel.CoverImage) ? "https://placehold.co/200x300/1a1c23/FFF?text=No+Image" : Novel.CoverImage)"
+            alt = "@Novel.Title"
+            class = "card-img"
+        />
+
+        <div class = "card-overlay">
+            <span class = "badge-category">@Novel.CategoryName</span>
+        </div>
+
+        <div class = "card-status">
+            @if (Novel.StatusName is "Full" or "Completed")
+            {
+                <span class = "badge-status full">Hoàn thành</span>
+            }
+            else
+            {
+                <span class = "badge-status ongoing">Còn tiếp</span>
+            }
+        </div>
+    </div>
+
+    <div class = "card-info">
+        <h3 class = "novel-title" title = "@Novel.Title">@Novel.Title</h3>
+
+        <div class = "novel-meta">
+            <span class = "author" title = "@Novel.Author">
+                <i class = "bi bi-pen-fill"></i> @Novel.Author
+            </span>
+
+            <span class = "rating">
+                <i class = "bi bi-star-fill text-warning"></i>
+                    @Novel.Rating.ToString("0.0", CultureInfo.CurrentCulture)
+            </span>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    // Nhận dữ liệu truyện từ cha (Home.razor) truyền vào
+    [Parameter] public NovelDto Novel { get; set; } = null!;
+}

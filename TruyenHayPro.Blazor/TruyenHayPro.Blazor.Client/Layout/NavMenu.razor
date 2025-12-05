@@ -1,0 +1,55 @@
+﻿@using TruyenHayPro.Blazor.Client.Components.Shared
+
+<nav class = "navbar">
+    <div class = "container-fluid nav-container">
+
+        <a class = "brand-link" href = "">
+            <div class = "brand-icon">
+                <i class = "bi bi-book-half"></i>
+            </div>
+            <span class = "brand-text">TruyenHay<span class = "pro-tag">Pro</span></span>
+        </a>
+
+        <button class = "nav-toggler" @onclick = "ToggleNavMenu">
+            <i class = "bi bi-list"></i>
+        </button>
+
+        <div class = "@NavMenuCssClass nav-menu-content">
+
+            <div class = "nav-links">
+                <NavLink class = "nav-item" href = "" Match = "NavLinkMatch.All">
+                    Trang Chủ
+                </NavLink>
+                <NavLink class = "nav-item" href = "the-loai">
+                    Thể Loại
+                </NavLink>
+                <NavLink class = "nav-item" href = "bang-xep-hang">
+                    BXH
+                </NavLink>
+            </div>
+
+            <div class = "nav-actions">y
+                <div class = "search-box">
+                    <i class = "bi bi-search"></i>
+                    <input type = "text" placeholder = "Tìm kiếm..."/>
+                </div>
+                <ThemeToggle/>
+                <NavLink class = "action-btn" href = "tu-truyen" title = "Tủ Truyện">
+                    <i class = "bi bi-bookmark-heart"></i>
+                </NavLink>
+                <NavLink class = "action-btn" href = "login" title = "Đăng nhập">
+                    <i class = "bi bi-person-circle"></i>
+                </NavLink>
+                <NavLink class = "action-btn" href = "register" title = "Đăng ký">
+                    <i class = "bi bi-person-circle"></i>
+                </NavLink>
+            </div>
+        </div>
+    </div>
+</nav>
+
+@code {
+    private bool collapseNavMenu = true;
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+}

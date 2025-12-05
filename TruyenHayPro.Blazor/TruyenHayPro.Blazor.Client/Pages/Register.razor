@@ -1,0 +1,105 @@
+﻿@page "/register"
+@using TruyenHayPro.Shared.Contracts.Identity
+@using TruyenHayPro.Blazor.Client.Services.Interface
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+@layout MainLayout
+
+
+<PageTitle>Đăng Ký - TruyenHayPro</PageTitle>
+
+<div class="split-layout">
+    <div class="left-panel">
+        <div class="art-overlay">
+            <div class="art-content">
+                <h1 class="art-headline">Khởi đầu hành trình tu tiên của bạn.</h1>
+                <p class="art-sub">Tham gia cộng đồng hàng triệu đạo hữu đam mê truyện tiên hiệp, huyền huyễn ngay hôm nay.</p>
+                
+                <div class="user-review">
+                    <div class="stars">★★★★★</div>
+                    <p>"Kho truyện phong phú nhất mà tôi từng biết."</p>
+                    <span>- Một độc giả ẩn danh</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <div class="form-container">
+            <div class="form-header">
+                <h2>Tạo tài khoản mới</h2>
+                <p>Nhập thông tin chi tiết để bắt đầu</p>
+            </div>
+
+            <EditForm Model="@registerModel" OnValidSubmit="HandleRegistration">
+                <DataAnnotationsValidator />
+                
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert-error">
+                        <i class="bi bi-x-circle-fill"></i> @errorMessage
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <InputText class="pro-input" placeholder="Ví dụ: Trần Phàm" @bind-Value="registerModel.FullName" />
+                    <ValidationMessage For="@(() => registerModel.FullName)" class="val-text" />
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <InputText type="email" class="pro-input" placeholder="name@email.com" @bind-Value="registerModel.Email" />
+                    <ValidationMessage For="@(() => registerModel.Email)" class="val-text" />
+                </div>
+
+                <div class="form-group">
+                    <label>Tên đăng nhập</label>
+                    <InputText class="pro-input" placeholder="vietliencodau" @bind-Value="registerModel.Username" />
+                    <ValidationMessage For="@(() => registerModel.Username)" class="val-text" />
+                </div>
+
+                <div class="row-inputs">
+                    <div class="form-group half">
+                        <label>Mật khẩu</label>
+                        <InputText type="password" class="pro-input" placeholder="••••••" @bind-Value="registerModel.Password" />
+                        <ValidationMessage For="@(() => registerModel.Password)" class="val-text" />
+                    </div>
+                    <div class="form-group half">
+                        <label>Nhập lại</label>
+                        <InputText type="password" class="pro-input" placeholder="••••••" @bind-Value="registerModel.ConfirmPassword" />
+                        <ValidationMessage For="@(() => registerModel.ConfirmPassword)" class="val-text" />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit-pro">
+                    Đăng Ký Tài Khoản
+                </button>
+
+                <div class="form-footer">
+                    <p>Bạn đã có tài khoản? <a href="/login">Đăng nhập ngay</a></p>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterRequest registerModel = new();
+    private string errorMessage = string.Empty;
+
+    private async Task HandleRegistration()
+    {
+        errorMessage = string.Empty;
+        var result = await AuthService.RegisterAsync(registerModel);
+
+        if (result.IsSuccess)
+        {
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            errorMessage = result.Errors != null ? string.Join(", ", result.Errors) : "Đăng ký thất bại.";
+        }
+    }
+}

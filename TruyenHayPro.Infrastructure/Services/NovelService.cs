@@ -3,6 +3,7 @@ using TruyenHayPro.Application.Common.Interfaces.Repositories;
 using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.DTO;
 using TruyenHayPro.Domain.Common.Entities;
+using TruyenHayPro.Domain.Enums;
 
 namespace TruyenHayPro.Infrastructure.Services;
 
@@ -55,8 +56,12 @@ public class NovelService : INovelService
             Description = dto.Description,
             Author = dto.Author,
             CoverImage = dto.CoverImageUrl,
-            Status = dto.Status,
-            
+            Status = NovelStatus.OnGoing,
+            Views = 0,
+            Likes = 0,
+            Rating = 0,
+            CreatedDate = DateTimeOffset.UtcNow,
+            LastModifiedAt = DateTimeOffset.UtcNow,
             CategoryId = dto.CategoryId // Gắn Category
         };
 

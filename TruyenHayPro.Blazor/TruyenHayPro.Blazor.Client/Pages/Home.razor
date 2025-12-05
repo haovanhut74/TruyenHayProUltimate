@@ -1,0 +1,55 @@
+﻿@page "/"
+@using TruyenHayPro.Application.Common.Interfaces.Services
+@using TruyenHayPro.Application.DTO
+@using TruyenHayPro.Blazor.Client.Components.Shared
+@attribute [StreamRendering]
+
+@inject INovelService NovelService
+
+<PageTitle>Trang Chủ - TruyenHayPro</PageTitle>
+
+<div class = "home-container">
+    <div class = "section-header">
+        <h2 class = "section-title">
+            <i class = "bi bi-fire text-danger"></i> Truyện Mới Cập Nhật
+        </h2>
+        <a href = "the-loai" class = "view-all">
+            Xem tất cả <i class = "bi bi-chevron-right"></i>
+        </a>
+    </div>
+
+    @if (novels == null)
+    {
+        <div class = "loading-state">
+            <div class = "spinner-border text-primary" role = "status"></div>
+            <p>Đang triệu hồi linh thạch...</p>
+        </div>
+    }
+    else if (novels.Count == 0)
+    {
+        <div class = "empty-state">
+            <i class = "bi bi-inbox"></i>
+            <p>Tàng Kinh Các hiện đang trống rỗng.</p>
+        </div>
+    }
+    else
+    {
+        <div class = "novel-grid">
+            @foreach (var novel in novels)
+            {
+                <NovelCard Novel = "novel"/>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<NovelDto>? novels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Gọi Service lấy 12 truyện mới nhất
+        novels = await NovelService.GetNovelsHomeAsync(10);
+    }
+
+}
