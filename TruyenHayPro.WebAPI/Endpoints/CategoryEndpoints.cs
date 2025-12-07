@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Mvc;
 using TruyenHayPro.Application.Common.Interfaces.Repositories;
 using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.DTO;
@@ -11,18 +11,21 @@ public static class CategoryEndpoints
     {
         var group = app.MapGroup("/api/categories");
 
-        // GET: Lấy danh sách (Có Cache 30 phút)
-        group.MapGet("/", async (ICategoryRepository repo, IMemoryCache cache) =>
+        // 1. API Lấy danh sách thể loại (ĐÂY LÀ PHẦN CẦN THÊM)
+        group.MapGet("/", async (ICategoryRepository repo) =>
         {
-            // Nếu có trong Cache thì lấy ra, chưa có thì gọi DB rồi lưu vào Cache
-            return await cache.GetOrCreateAsync("categories_list", async entry =>
+            var categories = await repo.GetAllAsync();
+            // Chuyển đổi sang DTO
+            var dtos = categories.Select(c => new CategoryDto
             {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30); // Lưu 30 phút
-                var categories = await repo.GetAllAsync();
-                return categories.Select(c => new CategoryDto { Id = c.Id, Name = c.Name }).ToList();
-            });
+                Id = c.Id,
+                Name = c.Name
+            }).ToList();
+
+            return Results.Ok(dtos);
         });
 
+        // 2. API Tạo thể loại (Giữ nguyên cái cũ)
         group.MapPost("/", CreateCategory);
     }
 

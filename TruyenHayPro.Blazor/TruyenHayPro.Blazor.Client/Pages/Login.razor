@@ -8,7 +8,8 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@rendermode InteractiveServer
+
 <PageTitle>Đăng Nhập - TruyenHayPro</PageTitle>
 
 <div class="login-container">
@@ -20,7 +21,7 @@
             <p>Nhập linh thức để phi thăng vào Tàng Kinh Các</p>
         </div>
 
-        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="LoginForm">
             <DataAnnotationsValidator />
             @if (!string.IsNullOrEmpty(errorMessage))
             {

@@ -1,460 +1,244 @@
-﻿/* ==================== VARIABLES & RESET ==================== */
+﻿/* ==================== BIẾN MÀU SẮC ==================== */
 :root {
-    --primary: #8b5cf6;
-    --primary-dark: #7c3aed;
-    --secondary: #06b6d4;
-    --bg-dark: #0f0f1e;
-    --card-bg: linear-gradient(135deg, rgba(30, 30, 50, 0.95), rgba(20, 20, 35, 0.98));
-    --border-glow: rgba(139, 92, 246, 0.3);
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --text-muted: #94a3b8;
+    --bg-page: #121212;
+    --bg-card: #1e1e1e;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --accent-color: #bb86fc; /* Tím nhạt */
+    --accent-hover: #9965f4;
+    --border-color: #333;
+    --input-bg: #2c2c2c;
+    --error-color: #cf6679;
 }
 
-/* ==================== CONTAINER & BACKGROUND ==================== */
+/* ==================== TỔNG THỂ ==================== */
 .create-container {
-    position: relative;
-    width: 100%;
     min-height: calc(100vh - 70px);
     display: flex;
-    align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
-    padding: 3rem 1.5rem;
-    overflow: hidden;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    padding: 2rem;
+    background-color: var(--bg-page);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Animated background particles */
-.create-container::before,
-.create-container::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.15;
-    animation: float 20s infinite ease-in-out;
-}
-
-.create-container::before {
-    width: 500px;
-    height: 500px;
-    background: var(--primary);
-    top: -10%;
-    right: -10%;
-    animation-delay: -5s;
-}
-
-.create-container::after {
-    width: 400px;
-    height: 400px;
-    background: var(--secondary);
-    bottom: -10%;
-    left: -10%;
-}
-
-@keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -30px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-}
-
-.background-overlay {
-    position: absolute;
-    inset: 0;
-    background:
-            radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
-    backdrop-filter: blur(2px);
-}
-
-/* ==================== CARD DESIGN ==================== */
+/* ==================== CARD CHÍNH ==================== */
 .create-card {
-    position: relative;
     width: 100%;
-    max-width: 1000px;
-    background: var(--card-bg);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: 24px;
-    padding: 3rem;
-    box-shadow:
-            0 20px 60px rgba(0, 0, 0, 0.5),
-            0 0 80px rgba(139, 92, 246, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    z-index: 10;
-    animation: cardEntrance 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 900px;
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    padding: 2.5rem;
+    color: var(--text-primary);
+    animation: fadeIn 0.5s ease-out;
 }
 
-.create-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 24px;
-    padding: 1px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.3;
-}
-
-@keyframes cardEntrance {
-    from {
-        opacity: 0;
-        transform: translateY(40px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==================== HEADER ==================== */
 .card-header {
     text-align: center;
-    margin-bottom: 3rem;
-    color: white;
-    position: relative;
-}
-
-.card-header::after {
-    content: '';
-    position: absolute;
-    bottom: -1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1.5rem;
 }
 
 .card-header h3 {
-    font-weight: 700;
-    font-size: 2rem;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.5px;
-}
-
-.card-header h3 i {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-right: 0.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .card-header p {
-    color: var(--text-muted);
-    font-size: 1rem;
-    font-weight: 300;
-    letter-spacing: 0.3px;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
 }
 
-/* ==================== GRID LAYOUT ==================== */
+/* ==================== FORM LAYOUT (GRID) ==================== */
 .form-grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 300px 1fr; /* Cột trái (Ảnh) cố định, Phải (Form) co giãn */
     gap: 2.5rem;
-    margin-bottom: 2rem;
 }
 
-.left-col, .right-col {
+/* --- CỘT TRÁI: ẢNH BÌA --- */
+.left-col {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
-/* ==================== MAGIC INPUT FIELDS ==================== */
-.magic-group {
-    position: relative;
-    margin-bottom: 0;
-}
-
-.magic-input {
+.image-preview-wrapper {
     width: 100%;
-    padding: 14px 16px;
+    aspect-ratio: 2 / 3; /* Tỉ lệ chuẩn poster truyện */
+    background-color: var(--input-bg);
+    border-radius: 12px;
+    border: 2px dashed var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.3s;
+}
+
+.image-preview-wrapper:hover {
+    border-color: var(--accent-color);
+}
+
+.book-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.empty-cover {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-secondary);
+    gap: 8px;
+}
+
+.empty-cover i {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+/* --- CỘT PHẢI: FORM NHẬP LIỆU --- */
+.right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* --- FORM GROUP & INPUT --- */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-left: 4px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
     font-size: 1rem;
-    color: var(--text-primary) !important;
-    background: rgba(15, 23, 42, 0.5) !important;
-    border: 1.5px solid rgba(139, 92, 246, 0.2) !important;
-    border-radius: 12px !important;
-    outline: none !important;
-    box-shadow: none !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    backdrop-filter: blur(10px);
+    transition: all 0.2s;
 }
 
-.magic-input:focus {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1) !important;
-    background: rgba(15, 23, 42, 0.8) !important;
+.form-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.15); /* Hiệu ứng focus nhẹ */
+    background-color: #333;
 }
 
-.magic-input:hover:not(:focus) {
-    border-color: rgba(139, 92, 246, 0.4) !important;
+.form-input::placeholder {
+    color: #666;
 }
 
-/* Dropdown Styles */
-.magic-input.dropdown-fix {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238b5cf6' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E") !important;
-    background-repeat: no-repeat !important;
-    background-position: right 12px center !important;
-    padding-right: 40px !important;
+/* TextArea đặc biệt */
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
 }
 
-.magic-input.dropdown-fix option {
-    background: #1a1a2e;
+/* Dropdown */
+.form-input option {
+    background-color: var(--bg-card);
     color: var(--text-primary);
     padding: 10px;
 }
 
-/* TextArea */
-.magic-input.textarea-mode {
-    min-height: 120px;
-    resize: vertical;
-    font-family: inherit;
-    line-height: 1.6;
-}
-
-/* Labels */
-.magic-label {
-    position: absolute;
-    top: 50%;
-    left: 16px;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: transparent;
-    padding: 0 4px;
-    font-size: 1rem;
-    font-weight: 400;
-}
-
-.magic-label.static-label,
-.magic-input:focus ~ .magic-label,
-.magic-input:not(:placeholder-shown) ~ .magic-label {
-    top: 0;
-    font-size: 0.75rem;
-    color: var(--primary);
-    font-weight: 600;
-    background: linear-gradient(to bottom, transparent 50%, var(--bg-dark) 50%);
-    transform: translateY(-50%);
-    letter-spacing: 0.5px;
-}
-
-/* For TextArea label positioning */
-.magic-group:has(.textarea-mode) .magic-label {
-    top: 20px;
-    transform: translateY(0);
-}
-
-.magic-group:has(.textarea-mode) .magic-label.static-label,
-.magic-input.textarea-mode:focus ~ .magic-label,
-.magic-input.textarea-mode:not(:placeholder-shown) ~ .magic-label {
-    top: 0;
-    transform: translateY(-50%);
-}
-
-.magic-bar {
-    display: none; /* Not needed with border style */
-}
-
-/* Full width group */
-.magic-group.full-width {
-    grid-column: 1 / -1;
-}
-
-/* ==================== IMAGE PREVIEW ==================== */
-.image-preview {
-    width: 100%;
-    aspect-ratio: 2/3;
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8));
-    border-radius: 16px;
-    overflow: hidden;
-    border: 2px dashed rgba(139, 92, 246, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: all 0.3s ease;
-    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.image-preview:hover {
-    border-color: rgba(139, 92, 246, 0.6);
-    transform: translateY(-2px);
-    box-shadow:
-            inset 0 2px 10px rgba(0, 0, 0, 0.3),
-            0 8px 20px rgba(139, 92, 246, 0.2);
-}
-
-.image-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.image-preview:hover img {
-    transform: scale(1.05);
-}
-
-/* ==================== SUBMIT BUTTON ==================== */
-.btn-create-storm {
-    width: 100%;
-    padding: 16px;
-    margin-top: 1.5rem;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    border: none;
-    border-radius: 12px;
-    color: white;
+/* --- NÚT SUBMIT --- */
+.btn-submit {
+    margin-top: 1rem;
+    padding: 14px;
+    background-color: var(--accent-color);
+    color: var(--text-main); /* Chữ màu tối trên nền sáng để dễ đọc */
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow:
-            0 4px 15px rgba(139, 92, 246, 0.4),
-            0 0 0 0 rgba(139, 92, 246, 0.5);
-    position: relative;
-    overflow: hidden;
-    letter-spacing: 0.5px;
-}
-
-.btn-create-storm::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transform: translateX(-100%);
-    transition: transform 0.6s;
-}
-
-.btn-create-storm:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow:
-            0 8px 25px rgba(139, 92, 246, 0.5),
-            0 0 40px rgba(139, 92, 246, 0.3);
-}
-
-.btn-create-storm:hover:not(:disabled)::before {
-    transform: translateX(100%);
-}
-
-.btn-create-storm:active:not(:disabled) {
-    transform: translateY(0);
-}
-
-.btn-create-storm:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.btn-create-storm span {
-    position: relative;
-    z-index: 1;
+    transition: all 0.2s;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    text-transform: uppercase;
+    border: 1px solid var(--border-color);
 }
 
-/* ==================== VALIDATION & ALERTS ==================== */
-.val-msg {
-    color: #f87171;
-    font-size: 0.8rem;
-    display: block;
-    margin-top: 6px;
-    margin-left: 4px;
-    font-weight: 500;
+.btn-submit:hover:not(:disabled) {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(187, 134, 252, 0.3);
 }
 
-.alert-box.error {
-    background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-left: 4px solid #ef4444;
-    color: #fca5a5;
-    padding: 14px 16px;
-    border-radius: 12px;
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #555;
+}
+
+/* --- THÔNG BÁO LỖI --- */
+.alert-error {
+    background-color: rgba(207, 102, 121, 0.15);
+    border: 1px solid rgba(207, 102, 121, 0.3);
+    color: var(--error-color);
+    padding: 12px;
+    border-radius: 8px;
     margin-bottom: 2rem;
     display: flex;
-    gap: 12px;
     align-items: center;
-    font-size: 0.95rem;
-    backdrop-filter: blur(10px);
-    animation: slideIn 0.3s ease-out;
+    gap: 10px;
+    font-size: 0.9rem;
 }
 
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+.error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 4px;
+    margin-left: 4px;
 }
 
-.alert-box.error i {
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-/* ==================== RESPONSIVE DESIGN ==================== */
+/* ==================== RESPONSIVE ==================== */
 @media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .create-card {
-        padding: 2rem 1.5rem;
-        border-radius: 20px;
-    }
-
-    .card-header h3 {
-        font-size: 1.6rem;
-    }
-
-    .image-preview {
-        aspect-ratio: 3/4;
-        max-height: 350px;
-    }
-
-    .btn-create-storm {
-        padding: 14px;
-        font-size: 1rem;
-    }
-
     .create-container {
-        padding: 2rem 1rem;
+        padding: 1rem;
     }
-}
 
-@media (max-width: 480px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* Chuyển thành 1 cột trên mobile */
+        gap: 2rem;
+    }
+
+    .left-col {
+        order: -1; /* Đưa ảnh lên đầu (hoặc bỏ dòng này để ảnh xuống dưới) */
+        max-width: 200px; /* Thu nhỏ ảnh trên mobile */
+        margin: 0 auto;
+    }
+
     .create-card {
-        padding: 1.5rem 1rem;
-    }
-
-    .card-header {
-        margin-bottom: 2rem;
-    }
-
-    .card-header h3 {
-        font-size: 1.4rem;
-    }
-
-    .card-header p {
-        font-size: 0.9rem;
-    }
-
-    .magic-input {
-        padding: 12px 14px;
-        font-size: 0.95rem;
+        padding: 1.5rem;
     }
 }

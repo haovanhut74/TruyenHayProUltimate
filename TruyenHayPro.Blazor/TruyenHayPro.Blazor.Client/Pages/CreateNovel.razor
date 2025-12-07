@@ -1,96 +1,176 @@
 ﻿@page "/create-novel"
+@using TruyenHayPro.Application.DTO
+@using TruyenHayPro.Blazor.Client.Services
 @using TruyenHayPro.Application.Common.Interfaces.Services
 @using Microsoft.AspNetCore.Authorization
-@attribute [Authorize]
+@using Microsoft.AspNetCore.Components.Authorization
+
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
 @inject INovelService NovelService
 @inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
 
 <PageTitle>Đăng Truyện Mới - TruyenHayPro</PageTitle>
 
-<div class="create-container">
-    <div class="create-card">
-        <div class="card-header">
-            <h3>Khai Ấn Tạo Truyện</h3>
-            <p>Kiến tạo thế giới - Viết lên huyền thoại</p>
-        </div>
-
-        <EditForm Model="@novelModel" OnValidSubmit="HandleCreateNovel">
-            <DataAnnotationsValidator />
-
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert-error">
-                    <i class="bi bi-exclamation-octagon-fill"></i> @errorMessage
+<AuthorizeView>
+    <Authorized>
+        <div class = "create-container">
+            <div class = "create-card">
+                <div class = "card-header">
+                    <h3>Khai Ấn Tạo Truyện</h3>
+                    <p>Chia sẻ thế giới tiên hiệp của đạo hữu với chúng sinh.</p>
                 </div>
-            }
 
-            <div class="form-grid">
-                <div class="left-col">
-                    <div class="image-preview-wrapper">
-                        @if (string.IsNullOrEmpty(novelModel.CoverImageUrl))
-                        {
-                            <div class="empty-cover">
-                                <i class="bi bi-image"></i>
-                                <span>Chưa có ảnh bìa</span>
+                <EditForm Model = "@novelModel" OnValidSubmit = "HandleCreateNovel" Context = "editContext" FormName = "CreateNovelForm">
+                    <DataAnnotationsValidator/>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class = "alert-error">
+                            <i class = "bi bi-exclamation-triangle-fill"></i> @errorMessage
+                        </div>
+                    }
+
+                    <div class = "form-grid">
+                        <div class = "left-col">
+                            <div class = "image-preview-wrapper">
+                                @if (string.IsNullOrEmpty(novelModel.CoverImageUrl))
+                                {
+                                    <div class = "empty-cover">
+                                        <i class = "bi bi-image"></i>
+                                        <span>Chưa có ảnh bìa</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <img
+                                        src = "@novelModel.CoverImageUrl" alt = "Bìa truyện" class = "book-cover"
+                                        onerror = "this.src='https://placehold.co/400x600/1e1e1e/FFF?text=Lỗi+Ảnh'"
+                                    />
+                                }
                             </div>
-                        }
-                        else
-                        {
-                            <img src="@novelModel.CoverImageUrl" alt="Bìa truyện" class="book-cover"
-                                 onerror="this.src='https://placehold.co/400x600/1e293b/FFF?text=Lỗi+Ảnh'" />
-                        }
-                    </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Link ảnh bìa (URL)</label>
-                        <InputText class="form-input" placeholder="https://..." @bind-Value="novelModel.CoverImageUrl" />
-                        <ValidationMessage For="@(() => novelModel.CoverImageUrl)" class="error-message" />
-                    </div>
-                </div>
+                            <div class = "form-group">
+                                <label class = "form-label">Link ảnh bìa (URL)</label>
+                                <InputText class = "form-input" placeholder = "https://..." @bind-Value = "novelModel.CoverImageUrl"/>
+                                <ValidationMessage For = "@(() => novelModel.CoverImageUrl)" class = "error-message"/>
+                            </div>
+                        </div>
 
-                <div class="right-col">
-                    <div class="form-group">
-                        <label class="form-label">Tên truyện</label>
-                        <InputText class="form-input" placeholder="Ví dụ: Phàm Nhân Tu Tiên" @bind-Value="novelModel.Title" />
-                        <ValidationMessage For="@(() => novelModel.Title)" class="error-message" />
-                    </div>
+                        <div class = "right-col">
+                            <div class = "form-group">
+                                <label class = "form-label">Tên truyện</label>
+                                <InputText class = "form-input" placeholder = "Ví dụ: Phàm Nhân Tu Tiên" @bind-Value = "novelModel.Title"/>
+                                <ValidationMessage For = "@(() => novelModel.Title)" class = "error-message"/>
+                            </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Tác giả / Bút danh</label>
-                        <InputText class="form-input" placeholder="Đạo hiệu của bạn" @bind-Value="novelModel.Author" />
-                        <ValidationMessage For="@(() => novelModel.Author)" class="error-message" />
-                    </div>
+                            <div class = "form-group">
+                                <label class = "form-label">Tác giả / Bút danh</label>
+                                <InputText class = "form-input" placeholder = "Đạo hiệu của bạn" @bind-Value = "novelModel.Author"/>
+                                <ValidationMessage For = "@(() => novelModel.Author)" class = "error-message"/>
+                            </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Thể loại</label>
-                        <InputSelect class="form-input" @bind-Value="novelModel.CategoryId">
-                            <option value="@Guid.Empty">-- Chọn Thể Loại --</option>
-                            @foreach (var cat in categories)
-                            {
-                                <option value="@cat.Id">@cat.Name</option>
-                            }
-                        </InputSelect>
-                        <ValidationMessage For="@(() => novelModel.CategoryId)" class="error-message" />
-                    </div>
+                            <div class = "form-group">
+                                <label class = "form-label">Thể loại</label>
+                                <InputSelect class = "form-input" @bind-Value = "novelModel.CategoryId">
+                                    <option value = "@Guid.Empty">-- Chọn Thể Loại --</option>
+                                    @foreach (var cat in categories)
+                                    {
+                                        <option value = "@cat.Id">@cat.Name</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For = "@(() => novelModel.CategoryId)" class = "error-message"/>
+                            </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Giới thiệu tóm tắt</label>
-                        <InputTextArea class="form-input form-textarea" placeholder="Mô tả nội dung cốt truyện..." @bind-Value="novelModel.Description" />
-                        <ValidationMessage For="@(() => novelModel.Description)" class="error-message" />
-                    </div>
+                            <div class = "form-group">
+                                <label class = "form-label">Giới thiệu tóm tắt</label>
+                                <InputTextArea class = "form-input form-textarea" placeholder = "Mô tả nội dung cốt truyện..." @bind-Value = "novelModel.Description"/>
+                                <ValidationMessage For = "@(() => novelModel.Description)" class = "error-message"/>
+                            </div>
 
-                    <button type="submit" class="btn-submit" disabled="@isLoading">
-                        @if (isLoading)
-                        {
-                            <span class="spinner-border spinner-border-sm me-2"></span> <span>Đang xử lý...</span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-rocket-takeoff-fill"></i> <span>Đăng Truyện Ngay</span>
-                        }
-                    </button>
-                </div>
+                            <button type = "submit" class = "btn-submit" disabled = "@isLoading">
+                                @if (isLoading)
+                                {
+                                    <span class = "spinner-border spinner-border-sm me-2"></span>
+                                    <span>Đang xử lý...</span>
+                                }
+                                else
+                                {
+                                    <i class = "bi bi-pencil-square"></i>
+                                    <span>Đăng Truyện Ngay</span>
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </EditForm>
             </div>
-        </EditForm>
-    </div>
-</div>
+        </div>
+    </Authorized>
+
+    <NotAuthorized>
+        <div class = "create-container">
+            <div class = "create-card" style = "text-align: center; padding: 4rem;">
+                <h3 style = "color: var(--error-color); margin-bottom: 1rem;">Khu vực cấm địa!</h3>
+                <p style = "color: var(--text-secondary); margin-bottom: 2rem;">Đạo hữu cần nhập môn (đăng nhập) trước
+                    khi khai ấn.</p>
+                <a href = "login" class = "btn-submit" style = "text-decoration: none; display: inline-flex; width: auto; padding: 12px 30px;">
+                    Đến trang đăng nhập
+                </a>
+            </div>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    // Code logic C# GIỮ NGUYÊN KHÔNG ĐỔI
+    private CreateNovelDto novelModel = new();
+    private List<CategoryDto> categories = [];
+    private string errorMessage = string.Empty;
+    private bool isLoading = false;
+
+    [CascadingParameter] private Task<AuthenticationState> authenticationStateTask { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (!authState.User.Identity?.IsAuthenticated ?? true) return;
+
+        if (NovelService is ClientNovelService clientService)
+        {
+            categories = await clientService.GetCategoriesAsync();
+
+            // Debug: In ra console xem có lấy được không
+            if (categories.Count == 0)
+            {
+                Console.WriteLine("Không lấy được thể loại nào!");
+            }
+        }
+    }
+
+    private async Task HandleCreateNovel()
+    {
+        if (novelModel.CategoryId == Guid.Empty)
+        {
+            errorMessage = "Vui lòng chọn thể loại!";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            var id = await NovelService.CreateNovelAsync(novelModel);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+        isLoading = false;
+    }
+
+}

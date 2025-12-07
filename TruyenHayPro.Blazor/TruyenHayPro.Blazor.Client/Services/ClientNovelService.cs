@@ -57,20 +57,17 @@ public class ClientNovelService : INovelService
     // Sau này làm trang Admin bên Client thì ta sẽ viết code gọi API POST ở đây.
 
 
-    public Task<Guid> CreateCategoryAsync(CreateCategoryDto dto)
-    {
-        throw new NotImplementedException();
-    }
-
-
+    // --- THÊM HÀM NÀY ĐỂ LẤY THỂ LOẠI ---
     public async Task<List<CategoryDto>> GetCategoriesAsync()
     {
         try
         {
+            // Gọi đến API vừa tạo ở Bước 2
             return await _http.GetFromJsonAsync<List<CategoryDto>>("api/categories") ?? [];
         }
         catch
         {
+            // Nếu lỗi thì trả về danh sách rỗng để không crash app
             return [];
         }
     }
