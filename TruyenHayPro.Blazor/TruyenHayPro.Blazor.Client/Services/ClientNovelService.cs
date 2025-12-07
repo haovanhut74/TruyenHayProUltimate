@@ -14,16 +14,29 @@ public class ClientNovelService : INovelService
     }
 
     // --- CÁC HÀM LẤY DỮ LIỆU ---
+    public async Task<Guid> CreateNovelAsync(CreateNovelDto dto)
+    {
+        var response = await _http.PostAsJsonAsync("api/novels", dto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            return await response.Content.ReadFromJsonAsync<Guid>();
+        }
+
+        // Đọc lỗi từ Server gửi về (nếu có)
+        var errorContent = await response.Content.ReadAsStringAsync();
+        throw new Exception($"Lỗi tạo truyện: {errorContent}");
+    }
+
     public async Task<List<NovelDto>> GetNovelsHomeAsync(int count)
     {
         try
         {
-            var result = await _http.GetFromJsonAsync<List<NovelDto>>($"api/novels/home?count={count}");
-            return result ?? new List<NovelDto>();
+            return await _http.GetFromJsonAsync<List<NovelDto>>($"api/novels/home?count={count}") ?? [];
         }
         catch
         {
-            return new List<NovelDto>();
+            return [];
         }
     }
 
@@ -43,16 +56,22 @@ public class ClientNovelService : INovelService
     // Ở trang chủ ta chưa dùng tới chức năng thêm, nên tạm thời cứ để nó ném lỗi hoặc trả về 0
     // Sau này làm trang Admin bên Client thì ta sẽ viết code gọi API POST ở đây.
 
-    public Task<Guid> CreateNovelAsync(CreateNovelDto dto)
-    {
-        throw new NotImplementedException("Client chưa hỗ trợ tạo truyện lúc này.");
-    }
 
     public Task<Guid> CreateCategoryAsync(CreateCategoryDto dto)
     {
         throw new NotImplementedException();
     }
 
-    // Nếu phu quân đã lỡ thêm hàm CreateTagAsync vào Interface thì thêm dòng này:
-    public Task<Guid> CreateTagAsync(CreateTagDto dto) => throw new NotImplementedException();
+
+    public async Task<List<CategoryDto>> GetCategoriesAsync()
+    {
+        try
+        {
+            return await _http.GetFromJsonAsync<List<CategoryDto>>("api/categories") ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
 }

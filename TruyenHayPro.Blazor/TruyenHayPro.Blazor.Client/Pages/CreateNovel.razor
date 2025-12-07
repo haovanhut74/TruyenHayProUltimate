@@ -1,0 +1,96 @@
+﻿@page "/create-novel"
+@using TruyenHayPro.Application.Common.Interfaces.Services
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject INovelService NovelService
+@inject NavigationManager Navigation
+
+<PageTitle>Đăng Truyện Mới - TruyenHayPro</PageTitle>
+
+<div class="create-container">
+    <div class="create-card">
+        <div class="card-header">
+            <h3>Khai Ấn Tạo Truyện</h3>
+            <p>Kiến tạo thế giới - Viết lên huyền thoại</p>
+        </div>
+
+        <EditForm Model="@novelModel" OnValidSubmit="HandleCreateNovel">
+            <DataAnnotationsValidator />
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert-error">
+                    <i class="bi bi-exclamation-octagon-fill"></i> @errorMessage
+                </div>
+            }
+
+            <div class="form-grid">
+                <div class="left-col">
+                    <div class="image-preview-wrapper">
+                        @if (string.IsNullOrEmpty(novelModel.CoverImageUrl))
+                        {
+                            <div class="empty-cover">
+                                <i class="bi bi-image"></i>
+                                <span>Chưa có ảnh bìa</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@novelModel.CoverImageUrl" alt="Bìa truyện" class="book-cover"
+                                 onerror="this.src='https://placehold.co/400x600/1e293b/FFF?text=Lỗi+Ảnh'" />
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Link ảnh bìa (URL)</label>
+                        <InputText class="form-input" placeholder="https://..." @bind-Value="novelModel.CoverImageUrl" />
+                        <ValidationMessage For="@(() => novelModel.CoverImageUrl)" class="error-message" />
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="form-group">
+                        <label class="form-label">Tên truyện</label>
+                        <InputText class="form-input" placeholder="Ví dụ: Phàm Nhân Tu Tiên" @bind-Value="novelModel.Title" />
+                        <ValidationMessage For="@(() => novelModel.Title)" class="error-message" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tác giả / Bút danh</label>
+                        <InputText class="form-input" placeholder="Đạo hiệu của bạn" @bind-Value="novelModel.Author" />
+                        <ValidationMessage For="@(() => novelModel.Author)" class="error-message" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Thể loại</label>
+                        <InputSelect class="form-input" @bind-Value="novelModel.CategoryId">
+                            <option value="@Guid.Empty">-- Chọn Thể Loại --</option>
+                            @foreach (var cat in categories)
+                            {
+                                <option value="@cat.Id">@cat.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => novelModel.CategoryId)" class="error-message" />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Giới thiệu tóm tắt</label>
+                        <InputTextArea class="form-input form-textarea" placeholder="Mô tả nội dung cốt truyện..." @bind-Value="novelModel.Description" />
+                        <ValidationMessage For="@(() => novelModel.Description)" class="error-message" />
+                    </div>
+
+                    <button type="submit" class="btn-submit" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span class="spinner-border spinner-border-sm me-2"></span> <span>Đang xử lý...</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-rocket-takeoff-fill"></i> <span>Đăng Truyện Ngay</span>
+                        }
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>

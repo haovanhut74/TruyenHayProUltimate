@@ -1,45 +1,90 @@
 ﻿@using TruyenHayPro.Blazor.Client.Components.Shared
+@using Microsoft.AspNetCore.Components.Authorization
+@using TruyenHayPro.Blazor.Client.Services.Interface
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
 
-<nav class = "navbar">
-    <div class = "container-fluid nav-container">
+<nav class="navbar">
+    <div class="container-fluid nav-container">
 
-        <a class = "brand-link" href = "">
-            <div class = "brand-icon">
-                <i class = "bi bi-book-half"></i>
+        <a class="brand-link" href="">
+            <div class="brand-icon">
+                <i class="bi bi-book-half"></i>
             </div>
-            <span class = "brand-text">TruyenHay<span class = "pro-tag">Pro</span></span>
+            <span class="brand-text">TruyenHay<span class="pro-tag">Pro</span></span>
         </a>
 
-        <button class = "nav-toggler" @onclick = "ToggleNavMenu">
-            <i class = "bi bi-list"></i>
+        <button class="nav-toggler" @onclick="ToggleNavMenu">
+            <i class="bi bi-list"></i>
         </button>
 
-        <div class = "@NavMenuCssClass nav-menu-content">
-
-            <div class = "nav-links">
-                <NavLink class = "nav-item" href = "" Match = "NavLinkMatch.All">
-                    Trang Chủ
-                </NavLink>
-                <NavLink class = "nav-item" href = "the-loai">
-                    Thể Loại
-                </NavLink>
-                <NavLink class = "nav-item" href = "bang-xep-hang">
-                    BXH
-                </NavLink>
+        <div class="@NavMenuCssClass nav-menu-content">
+            <div class="nav-links">
+                <NavLink class="nav-item" href="" Match="NavLinkMatch.All">Trang Chủ</NavLink>
+                <NavLink class="nav-item" href="the-loai">Thể Loại</NavLink>
+                <NavLink class="nav-item" href="bang-xep-hang">BXH</NavLink>
             </div>
 
-            <div class = "nav-actions">
-                <div class = "search-box">
-                    <i class = "bi bi-search"></i>
-                    <input type = "text" placeholder = "Tìm kiếm..."/>
+            <div class="nav-actions">
+                <div class="search-box">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Tìm kiếm..." />
                 </div>
-                <ThemeToggle/>
-                <NavLink class = "action-btn" href = "tu-truyen" title = "Tủ Truyện">
-                    <i class = "bi bi-bookmark-heart"></i>
-                </NavLink>
-                <NavLink class = "action-btn" href = "login" title = "Đăng nhập">
-                    <i class = "bi bi-person-circle"></i>
-                </NavLink>
+                
+                <ThemeToggle />
+
+                @if (isClientLoaded)
+                {
+                    <AuthorizeView>
+                        <Authorized>
+                            <div class="user-area">
+                                <button class="user-trigger" @onclick="ToggleUserMenu">
+                                    <span class="avatar-circle">
+                                        @(context.User.FindFirst("FullName")?.Value.Substring(0, 1).ToUpper() ?? "U")
+                                    </span>
+                                    <span class="user-name">
+                                        @context.User.FindFirst("FullName")?.Value
+                                    </span>
+                                    <i class="bi bi-chevron-down arrow-icon @(showUserMenu ? "rotate" : "")"></i>
+                                </button>
+
+                                @if (showUserMenu)
+                                {
+                                    <div class="user-dropdown-menu">
+                                        <div class="dropdown-header">
+                                            <strong>@context.User.FindFirst("FullName")?.Value</strong>
+                                            <span>Đạo hữu</span>
+                                        </div>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="tu-truyen" class="dropdown-item">
+                                            <i class="bi bi-bookmark-heart"></i> Tủ Truyện
+                                        </a>
+                                        <a href="ho-so" class="dropdown-item">
+                                            <i class="bi bi-person-gear"></i> Hồ Sơ
+                                        </a>
+                                        <a href="create-novel" class="dropdown-item">
+                                            <i class="bi bi-person-gear"></i> Sáng tác
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                        <button class="dropdown-item text-danger" @onclick="HandleLogout">
+                                            <i class="bi bi-box-arrow-right"></i> Đăng Xuất
+                                        </button>
+                                    </div>
+                                    <div class="click-overlay" @onclick="ToggleUserMenu"></div>
+                                }
+                            </div>
+                        </Authorized>
+                        <NotAuthorized>
+                            <NavLink class="login-btn-nav" href="login">
+                                <i class="bi bi-person-circle"></i> Đăng nhập
+                            </NavLink>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                }
+                else
+                {
+                    <div class="auth-skeleton"></div>
+                }
             </div>
         </div>
     </div>
@@ -48,5 +93,29 @@
 @code {
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    
+    // Biến cờ: Kiểm soát việc hiển thị Auth
+    private bool isClientLoaded = false;
+    private bool showUserMenu = false;
+
+    // Hàm này CHỈ chạy trên trình duyệt (Client), Server không chạy hàm này
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Báo hiệu: Client đã tải xong, giờ có thể check LocalStorage
+            isClientLoaded = true;
+            StateHasChanged(); // Vẽ lại giao diện
+        }
+    }
+
     private void ToggleNavMenu() => collapseNavMenu = !collapseNavMenu;
+    private void ToggleUserMenu() => showUserMenu = !showUserMenu;
+
+    private async Task HandleLogout()
+    {
+        await AuthService.LogoutAsync();
+        showUserMenu = false;
+        Navigation.NavigateTo("/", forceLoad: true);
+    }
 }

@@ -1,4 +1,6 @@
-﻿using TruyenHayPro.Application.Common.Interfaces.Services;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.DTO;
 
 namespace TruyenHayPro.WebAPI.Endpoints;
@@ -8,18 +10,11 @@ public static class NovelsEndpoints
     // Hàm này dùng để đăng ký tất cả các đường dẫn của Novels
     public static void MapNovelEndpoints(this IEndpointRouteBuilder app)
     {
-        // Tạo một nhóm đường dẫn bắt đầu bằng /api/novels
         var group = app.MapGroup("/api/novels");
-
-        // 1. API: Lấy danh sách trang chủ
-        // GET /api/novels/home
         group.MapGet("home", GetNovelsHome);
-
-        // 2. API: Lấy chi tiết truyện
-        // GET /api/novels/{id}
         group.MapGet("{id:guid}", GetNovelById);
 
-        // POST: /api/novels
+        // Cập nhật hàm POST
         group.MapPost("/", CreateNovel);
     }
     // --- CÁC HÀM XỬ LÝ (HANDLERS) ---
@@ -39,9 +34,18 @@ public static class NovelsEndpoints
         return novel == null ? Results.NotFound() : Results.Ok(novel);
     }
 
-    // --- HÀM XỬ LÝ ---
-    static async Task<IResult> CreateNovel(CreateNovelDto dto, INovelService service)
+    // Hàm tạo mới có Validation
+    static async Task<IResult> CreateNovel([FromBody] CreateNovelDto dto, INovelService service,
+        IValidator<CreateNovelDto> validator)
     {
+        // 1. Kiểm tra tính hợp lệ
+        var validationResult = await validator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+        {
+            return Results.BadRequest(validationResult.ToDictionary());
+        }
+
+        // 2. Nếu ổn thì mới tạo
         var id = await service.CreateNovelAsync(dto);
         return Results.Ok(id);
     }

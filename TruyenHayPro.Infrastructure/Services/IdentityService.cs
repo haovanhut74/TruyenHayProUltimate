@@ -65,7 +65,8 @@ public class IdentityService : IIdentityService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!)
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim("FullName", user.FullName ?? user.UserName!)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

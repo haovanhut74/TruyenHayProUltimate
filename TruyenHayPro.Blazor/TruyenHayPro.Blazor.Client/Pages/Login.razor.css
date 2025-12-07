@@ -1,4 +1,4 @@
-﻿/* --- TỔNG THỂ --- */
+﻿/* ... (Giữ nguyên phần login-container, background-overlay, login-card cũ) ... */
 .login-container {
     position: relative;
     width: 100%;
@@ -6,7 +6,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Nền tối huyền bí */
     background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
     background-size: cover;
 }
@@ -17,33 +16,19 @@
     background: radial-gradient(circle at center, rgba(20, 30, 48, 0.85), rgba(36, 59, 85, 0.95));
 }
 
-/* --- THẺ BÀI (CARD) --- */
 .login-card {
     position: relative;
     width: 400px;
     padding: 3rem 2rem;
-    background: rgba(16, 20, 25, 0.8); /* Đen mờ */
+    background: rgba(16, 20, 25, 0.9); /* Nền đậm hơn để che các lỗi phía sau */
     border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5),
-    inset 0 0 1px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     z-index: 10;
-    animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-@keyframes cardEntrance {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-/* --- HEADER --- */
+/* HEADER */
 .card-header {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -51,29 +36,14 @@
 
 .logo-container {
     font-size: 3rem;
-    background: -webkit-linear-gradient(#00c6ff, #0072ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #00c6ff;
     margin-bottom: 0.5rem;
-    filter: drop-shadow(0 0 10px rgba(0, 114, 255, 0.5));
-}
-
-.logo-spin {
-    display: inline-block;
-    animation: spin 8s linear infinite;
-}
-
-@keyframes spin {
-    100% {
-        transform: rotate(360deg);
-    }
 }
 
 .card-header h3 {
     color: #fff;
-    font-weight: 700;
     margin: 0;
-    letter-spacing: 1px;
+    font-weight: 700;
 }
 
 .card-header p {
@@ -82,49 +52,43 @@
     margin-top: 5px;
 }
 
-/* --- MAGIC INPUTS (ĐÃ SỬA LỖI NỀN TRẮNG) --- */
+/* --- INPUT FIX (Bản sửa lỗi đè chữ) --- */
 .magic-group {
     position: relative;
-    margin-bottom: 2rem;
-    width: 100%; /* Đảm bảo rộng 100% */
+    margin-bottom: 2.5rem; /* Tăng khoảng cách dưới để label không đè */
+    width: 100%;
 }
 
 .magic-input {
     width: 100%;
-    padding: 10px 0;
+    padding: 12px 0 8px 0; /* Chỉnh lại padding */
     font-size: 1rem;
-    color: #fff !important; /* Ép chữ màu trắng */
-
-    /* QUAN TRỌNG: Loại bỏ nền trắng và viền mặc định */
-    background-color: transparent !important;
+    color: #fff !important;
     background: transparent !important;
     border: none !important;
+    border-bottom: 2px solid #4a5568 !important;
     border-radius: 0 !important;
     outline: none !important;
-    box-shadow: none !important; /* Bỏ bóng của Bootstrap nếu có */
-
-    /* Chỉ giữ lại gạch chân */
-    border-bottom: 2px solid #4a5568 !important;
-
-    font-family: inherit;
+    box-shadow: none !important;
     z-index: 1;
     position: relative;
+    height: 40px; /* Cố định chiều cao */
 }
 
-/* Xử lý lỗi khi trình duyệt tự điền (Autofill) làm nền bị vàng/trắng */
+/* Kháng Autofill nền trắng */
 .magic-input:-webkit-autofill,
 .magic-input:-webkit-autofill:hover,
 .magic-input:-webkit-autofill:focus,
 .magic-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px #161b22 inset !important; /* Màu nền trùng với card */
-    -webkit-text-fill-color: white !important; /* Ép chữ trắng khi autofill */
+    -webkit-box-shadow: 0 0 0 1000px #171c24 inset !important; /* Màu nền trùng card */
+    -webkit-text-fill-color: white !important;
     transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Nhãn (Label) */
+/* Label */
 .magic-label {
     position: absolute;
-    top: 5px;
+    top: 10px;
     left: 0;
     font-size: 1rem;
     color: #a0aec0;
@@ -133,25 +97,24 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    z-index: 0;
 }
 
-/* Hiệu ứng thanh ngang phát sáng */
 .magic-bar {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    background: #00c6ff;
     transition: width 0.4s ease;
-    box-shadow: 0 0 10px rgba(0, 114, 255, 0.7);
     z-index: 2;
 }
 
-/* --- LOGIC KHI FOCUS (ĐẨY NHÃN LÊN) --- */
+/* Logic đẩy Label lên */
 .magic-input:focus ~ .magic-label,
 .magic-input:not(:placeholder-shown) ~ .magic-label {
-    top: -24px; /* Đẩy cao hơn chút nữa cho thoáng */
+    top: -22px; /* Đẩy cao hơn nữa */
     font-size: 0.85rem;
     color: #00c6ff;
     font-weight: 600;
@@ -160,18 +123,15 @@
 .magic-input:focus ~ .magic-bar {
     width: 100%;
 }
-/* Màu chữ khi nhập */
-.magic-input:not(:placeholder-shown) {
-    color: #e2e8f0;
-}
 
-/* --- ACTIONS --- */
+/* --- BUTTON & FOOTER --- */
 .form-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.9rem;
     margin-bottom: 2rem;
+    font-size: 0.9rem;
+    color: #a0aec0;
 }
 
 .remember-me {
@@ -179,56 +139,25 @@
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    color: #a0aec0;
-}
-
-.remember-me input {
-    display: none;
-}
-
-.checkmark {
-    width: 16px;
-    height: 16px;
-    border: 2px solid #4a5568;
-    border-radius: 4px;
-    transition: 0.2s;
-    position: relative;
-}
-
-.remember-me input:checked ~ .checkmark {
-    background: #0072ff;
-    border-color: #0072ff;
-    box-shadow: 0 0 8px rgba(0, 114, 255, 0.5);
 }
 
 .forgot-pass {
     color: #00c6ff;
     text-decoration: none;
-    font-weight: 500;
-    transition: 0.2s;
 }
 
-.forgot-pass:hover {
-    text-shadow: 0 0 5px rgba(0, 198, 255, 0.6);
-}
-
-/* --- BUTTON STORM (Nút Bão Táp) --- */
 .btn-login-storm {
-    position: relative;
     width: 100%;
     padding: 14px;
     border: none;
     background: #0072ff;
     color: white;
-    font-size: 1rem;
     font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    border-radius: 50px; /* Bo tròn hẳn */
+    border-radius: 50px;
     cursor: pointer;
-    overflow: hidden;
     transition: 0.3s;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .btn-login-storm:hover {
@@ -236,24 +165,11 @@
     transform: translateY(-2px);
 }
 
-/* Hiệu ứng chất lỏng bên trong nút */
-.btn-login-storm .liquid {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: rotate(45deg);
-    transition: 0.5s;
-    pointer-events: none;
+.btn-login-storm:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
-.btn-login-storm:hover .liquid {
-    left: 100%;
-}
-
-/* --- FOOTER & ERROR --- */
 .card-footer {
     text-align: center;
     margin-top: 2rem;
@@ -268,18 +184,10 @@
     text-decoration: none;
 }
 
-.val-msg {
-    color: #ff4757;
-    font-size: 0.8rem;
-    display: block;
-    margin-top: -15px;
-    margin-bottom: 15px;
-}
-
 .alert-box.error {
-    background: rgba(255, 71, 87, 0.1);
-    border: 1px solid rgba(255, 71, 87, 0.3);
-    color: #ff4757;
+    background: rgba(220, 38, 38, 0.2);
+    border: 1px solid rgba(220, 38, 38, 0.5);
+    color: #fca5a5;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 1.5rem;
@@ -287,4 +195,12 @@
     align-items: center;
     gap: 8px;
     font-size: 0.9rem;
+}
+
+.val-msg {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 15px;
 }
