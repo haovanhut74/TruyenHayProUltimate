@@ -1,0 +1,84 @@
+﻿@page "/login"
+@using TruyenHayPro.Shared.Contracts.Identity
+@using TruyenHayPro.Blazor.Client.Services.Interface
+@using Blazored.LocalStorage
+@using Microsoft.AspNetCore.Components.Authorization
+@using TruyenHayPro.Blazor.Client.Services
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILocalStorageService LocalStorage
+
+<PageTitle>Đăng Nhập - TruyenHayPro</PageTitle>
+
+<div class="login-container">
+    <div class="background-overlay"></div>
+    <div class="login-card">
+        <div class="card-header">
+            <div class="logo-container"><i class="bi bi-yin-yang logo-spin"></i></div>
+            <h3>Thiên Đạo Kết Nối</h3>
+            <p>Nhập linh thức để phi thăng vào Tàng Kinh Các</p>
+        </div>
+
+        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+            <DataAnnotationsValidator />
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert-box error"><i class="bi bi-fire"></i> @errorMessage</div>
+            }
+
+            <div class="magic-group">
+                <InputText id="username" class="magic-input" placeholder=" " @bind-Value="loginModel.Username" />
+                <label for="username" class="magic-label"><i class="bi bi-person-fill"></i> Tên đăng nhập</label>
+                <div class="magic-bar"></div>
+            </div>
+            <ValidationMessage For="@(() => loginModel.Username)" class="val-msg" />
+
+            <div class="magic-group">
+                <InputText type="password" id="password" class="magic-input" placeholder=" " @bind-Value="loginModel.Password" />
+                <label for="password" class="magic-label"><i class="bi bi-shield-lock-fill"></i> Mật khẩu</label>
+                <div class="magic-bar"></div>
+            </div>
+            <ValidationMessage For="@(() => loginModel.Password)" class="val-msg" />
+
+            <div class="form-actions">
+                <label class="remember-me">
+                    <input type="checkbox" /> <span class="checkmark"></span> Lưu giữ thần hồn
+                </label>
+                <a href="#" class="forgot-pass">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="btn-login-storm" disabled="@isLoading">
+                @if(isLoading) { <span>Đang kết nối...</span> } else { <span>Khai Mở Động Phủ</span> }
+                <div class="liquid"></div>
+            </button>
+        </EditForm>
+
+        <div class="card-footer"><p>Chưa có linh tịch? <a href="/register">Đăng ký nhập môn</a></p></div>
+    </div>
+</div>
+
+@code {
+    private LoginRequest loginModel = new();
+    private string errorMessage = string.Empty;
+    private bool isLoading = false;
+
+    private async Task HandleLogin()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+        var result = await AuthService.LoginAsync(loginModel);
+
+        if (result.IsSuccess)
+        {
+            await LocalStorage.SetItemAsync("authToken", result.Value.Token);
+            ((CustomAuthStateProvider)AuthStateProvider).NotifyUserLoggedIn(result.Value.Token);
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = result.Errors != null ? string.Join(", ", result.Errors) : "Đăng nhập thất bại.";
+        }
+        isLoading = false;
+    }
+}

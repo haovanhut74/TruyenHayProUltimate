@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TruyenHayPro.Application.Features.Auth.Login;
 using TruyenHayPro.Application.Features.Auth.Register;
 using TruyenHayPro.Shared.Contracts.Identity;
 
@@ -30,6 +31,13 @@ public static class AuthEndpoints
             }
 
             return Results.Ok(result);
+        });
+
+        group.MapPost("/login", async (ISender sender, [FromBody] LoginRequest request) =>
+        {
+            var command = new LoginCommand(request.Username, request.Password);
+            var result = await sender.Send(command);
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
         });
     }
 }

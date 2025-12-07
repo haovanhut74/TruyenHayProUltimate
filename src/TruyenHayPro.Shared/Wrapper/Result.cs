@@ -1,4 +1,6 @@
-﻿namespace TruyenHayPro.Shared.Wrapper;
+﻿using System.Text.Json.Serialization;
+
+namespace TruyenHayPro.Shared.Wrapper;
 
 public class Result
 {
@@ -7,6 +9,7 @@ public class Result
     public string[] Errors { get; }
 
     // Constructor được bảo vệ để bắt buộc dùng hàm Static
+    [JsonConstructor]
     protected Result(bool isSuccess, string[] errors)
     {
         IsSuccess = isSuccess;
@@ -30,7 +33,8 @@ public class Result
 public class Result<T> : Result
 {
     public T? Value { get; }
-
+    
+    [JsonConstructor]
     private Result(T? value, bool isSuccess, string[] errors)
         : base(isSuccess, errors)
     {
