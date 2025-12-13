@@ -68,7 +68,7 @@ public class ClientNovelService : INovelService
         catch
         {
             // Nếu lỗi thì trả về danh sách rỗng để không crash app
-            return [];
+            return new();
         }
     }
 }

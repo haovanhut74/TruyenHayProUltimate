@@ -16,12 +16,12 @@ public static class CategoryEndpoints
         {
             var categories = await repo.GetAllAsync();
             // Chuyển đổi sang DTO
-            var dtos = categories.Select(c => new CategoryDto
-            {
-                Id = c.Id,
-                Name = c.Name
+            var dtos = categories.Select(c => new CategoryDto 
+            { 
+                Id = c.Id, 
+                Name = c.Name 
             }).ToList();
-
+            
             return Results.Ok(dtos);
         });
 
