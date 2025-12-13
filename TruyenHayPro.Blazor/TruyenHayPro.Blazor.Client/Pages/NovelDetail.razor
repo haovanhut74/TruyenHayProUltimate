@@ -1,0 +1,125 @@
+﻿@page "/novel/{Id:guid}"
+@using TruyenHayPro.Application.DTO
+@using TruyenHayPro.Application.Common.Interfaces.Services
+@inject INovelService NovelService
+@inject NavigationManager Navigation
+
+<PageTitle>@(novel?.Title ?? "Đang tải...") - TruyenHayPro</PageTitle>
+
+@if (novel == null)
+{
+    <div class = "loading-container">
+        <div class = "spinner-box">
+            <div class = "configure-border-1">
+                <div class = "configure-core"></div>
+            </div>
+            <div class = "configure-border-2">
+                <div class = "configure-core"></div>
+            </div>
+        </div>
+        <p class = "mt-3 text-glow">Đang triệu hồi chân kinh...</p>
+    </div>
+}
+else
+{
+    <div class = "detail-container">
+        <div class = "bg-blur" style = "background-image: url('@novel.CoverImage')"></div>
+        <div class = "bg-overlay"></div>
+
+        <div class = "content-wrapper">
+            <div class = "novel-header card-glass">
+                <div class = "cover-wrapper">
+                    <img
+                        src = "@novel.CoverImage" alt = "@novel.Title" class = "novel-cover"
+                        onerror = "this.src='https://placehold.co/300x450/1e1e1e/FFF?text=No+Cover'"
+                    />
+                </div>
+
+                <div class = "info-section">
+                    <h1 class = "novel-title">@novel.Title</h1>
+
+                    <div class = "meta-row">
+                        <span class = "meta-item"><i class = "bi bi-person-fill"></i> @novel.Author</span>
+                        <span class = "meta-item"><i class = "bi bi-bookmark-star-fill"></i> @novel.CategoryName</span>
+                        <span class = "meta-item status-badge @(novel.StatusName == "Full" ? "full" : "")">@novel.StatusName</span>
+                    </div>
+
+                    <div class = "stats-row">
+                        <div class = "stat-box">
+                            <span class = "stat-value">@novel.Chapters.Count</span>
+                            <span class = "stat-label">Chương</span>
+                        </div>
+                        <div class = "stat-box">
+                            <span class = "stat-value">@novel.Rating</span>
+                            <span class = "stat-label">Đánh giá</span>
+                        </div>
+                        <div class = "stat-box">
+                            <span class = "stat-value">10.5K</span>
+                            <span class = "stat-label">Lượt xem</span>
+                        </div>
+                    </div>
+
+                    <div class = "action-buttons">
+                        <button class = "btn-read-primary">
+                            <i class = "bi bi-book-half"></i> Đọc Từ Đầu
+                        </button>
+                        <button class = "btn-outline">
+                            <i class = "bi bi-heart"></i> Yêu Thích
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class = "novel-body card-glass mt-4">
+                <div class = "tabs-header">
+                    <button
+                        class = "tab-btn @(activeTab == "intro" ? "active" : "")"
+                        @onclick = '() => activeTab = "intro"'
+                    >
+                        Giới Thiệu
+                    </button>
+                    <button
+                        class = "tab-btn @(activeTab == "chapters" ? "active" : "")"
+                        @onclick = '() => activeTab = "chapters"'
+                    >
+                        D.S Chương <span class = "badge-count">@novel.Chapters.Count</span>
+                    </button>
+                </div>
+
+                <div class = "tab-content">
+                    @if (activeTab == "intro")
+                    {
+                        <div class = "description-text animate-fade-in">
+                            @((MarkupString)novel.Description.Replace("\n", "<br>"))
+                        </div>
+                    }
+                    else if (activeTab == "chapters")
+                    {
+                        <div class = "chapter-list animate-fade-in">
+                            @if (novel.Chapters.Any())
+                            {
+                                <div class = "chapter-grid">
+                                    @foreach (var chap in novel.Chapters.OrderBy(c => c.OrderIndex))
+                                    {
+                                        <a href = "/chapter/@chap.Id" class = "chapter-item">
+                                            <span class = "chap-num">Chương @chap.OrderIndex</span>
+                                            <span class = "chap-title">@chap.Title</span>
+                                            <span class = "chap-date">@chap.CreatedDate.ToString("dd/MM")</span>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class = "empty-chap text-center">
+                                    <i class = "bi bi-journal-x"></i>
+                                    <p>Tác giả đang bế quan, chưa có chương nào.</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}

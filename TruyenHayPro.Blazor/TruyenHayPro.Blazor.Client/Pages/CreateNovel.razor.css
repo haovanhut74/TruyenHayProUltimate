@@ -1,15 +1,15 @@
 ﻿/* ==================== BIẾN MÀU SẮC ==================== */
-:root {
-    --bg-page: #121212;
-    --bg-card: #1e1e1e;
-    --text-primary: #e0e0e0;
-    --text-secondary: #a0a0a0;
-    --accent-color: #bb86fc; /* Tím nhạt */
-    --accent-hover: #9965f4;
-    --border-color: #333;
-    --input-bg: #2c2c2c;
-    --error-color: #cf6679;
-}
+/*:root {*/
+/*    --bg-page: #121212;*/
+/*    --bg-card: #1e1e1e;*/
+/*    --text-primary: #e0e0e0;*/
+/*    --text-secondary: #a0a0a0;*/
+/*    --accent-color: #bb86fc; !* Tím nhạt *!*/
+/*    --accent-hover: #9965f4;*/
+/*    --border-color: #333;*/
+/*    --input-bg: #2c2c2c;*/
+/*    --error-color: #cf6679;*/
+/*}*/
 
 /* ==================== TỔNG THỂ ==================== */
 .create-container {
@@ -18,7 +18,7 @@
     justify-content: center;
     align-items: center; /* Căn giữa theo chiều dọc */
     padding: 2rem;
-    background-color: var(--bg-page);
+    background-color: var(--page-bg);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -26,38 +26,46 @@
 .create-card {
     width: 100%;
     max-width: 900px;
-    background-color: var(--bg-card);
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     padding: 2.5rem;
-    color: var(--text-primary);
     animation: fadeIn 0.5s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ==================== HEADER ==================== */
 .card-header {
     text-align: center;
     margin-bottom: 2.5rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--card-border);
+    color: var(--accent);
     padding-bottom: 1.5rem;
 }
 
 .card-header h3 {
     font-size: 1.8rem;
     font-weight: 600;
-    color: var(--accent-color);
+    color: var(--accent);
     margin-bottom: 0.5rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .card-header p {
-    color: var(--text-secondary);
+    color: var(--text-sub);
     font-size: 0.95rem;
 }
 
@@ -79,8 +87,8 @@
     width: 100%;
     aspect-ratio: 2 / 3; /* Tỉ lệ chuẩn poster truyện */
     background-color: var(--input-bg);
+    border-color: var(--input-border);
     border-radius: 12px;
-    border: 2px dashed var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -90,7 +98,7 @@
 }
 
 .image-preview-wrapper:hover {
-    border-color: var(--accent-color);
+    border-color: var(--accent);
 }
 
 .book-cover {
@@ -103,7 +111,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: var(--text-secondary);
+    color: var(--text-sub);
     gap: 8px;
 }
 
@@ -129,25 +137,25 @@
 .form-label {
     font-size: 0.9rem;
     font-weight: 500;
-    color: var(--text-secondary);
+    color: var(--text-sub);
     margin-left: 4px;
 }
 
 .form-input {
     width: 100%;
     padding: 12px 16px;
-    background-color: var(--input-bg);
-    border: 1px solid var(--border-color);
+    background-color: var(--input-bg); /* Trắng ở light, tối ở dark */
+    border: 1px solid var(--input-border);
+    color: var(--text-main);
     border-radius: 8px;
-    color: var(--text-primary);
     font-size: 1rem;
     transition: all 0.2s;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.15); /* Hiệu ứng focus nhẹ */
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15); /* Tím nhạt */
     background-color: #333;
 }
 
@@ -164,8 +172,8 @@
 
 /* Dropdown */
 .form-input option {
-    background-color: var(--bg-card);
-    color: var(--text-primary);
+    background-color: var(--card-bg);
+    color: var(--text-sub);
     padding: 10px;
 }
 
@@ -173,7 +181,7 @@
 .btn-submit {
     margin-top: 1rem;
     padding: 14px;
-    background-color: var(--accent-color);
+    background-color: var(--accent);
     color: var(--text-main); /* Chữ màu tối trên nền sáng để dễ đọc */
     font-weight: 700;
     font-size: 1rem;
@@ -185,7 +193,7 @@
     justify-content: center;
     gap: 8px;
     text-transform: uppercase;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--card-border);
 }
 
 .btn-submit:hover:not(:disabled) {

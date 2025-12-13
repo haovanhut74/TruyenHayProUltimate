@@ -1,7 +1,7 @@
 ﻿@using System.Globalization
-@using TruyenHayPro.Application.DTO
+@inject NavigationManager Navigation 
 
-<div class = "novel-card">
+<div class = "novel-card" @onclick = "GoToDetail">
     <div class = "card-image-wrapper">
         <img
             src = "@(string.IsNullOrEmpty(Novel.CoverImage) ? "https://placehold.co/200x300/1a1c23/FFF?text=No+Image" : Novel.CoverImage)"
@@ -35,14 +35,8 @@
 
             <span class = "rating">
                 <i class = "bi bi-star-fill text-warning"></i>
-                    @Novel.Rating.ToString("0.0", CultureInfo.CurrentCulture)
+                @Novel.Rating.ToString("0.0", CultureInfo.CurrentCulture)
             </span>
         </div>
     </div>
 </div>
-
-@code {
-
-    // Nhận dữ liệu truyện từ cha (Home.razor) truyền vào
-    [Parameter] public NovelDto Novel { get; set; } = null!;
-}

@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2070&auto=format&fit=crop') no-repeat center center;
+    background: var(--page-bg);
     background-size: cover;
 }
 
@@ -20,11 +20,11 @@
     position: relative;
     width: 400px;
     padding: 3rem 2rem;
-    background: rgba(16, 20, 25, 0.9); /* Nền đậm hơn để che các lỗi phía sau */
+    background: var(--card-bg);
     border-radius: 20px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(16px);
     z-index: 10;
 }
 
@@ -41,13 +41,13 @@
 }
 
 .card-header h3 {
-    color: #fff;
+    color: var(--text-main);
     margin: 0;
     font-weight: 700;
 }
 
 .card-header p {
-    color: #8892b0;
+    color: var(--text-sub);
     font-size: 0.85rem;
     margin-top: 5px;
 }
@@ -63,10 +63,10 @@
     width: 100%;
     padding: 12px 0 8px 0; /* Chỉnh lại padding */
     font-size: 1rem;
-    color: #fff !important;
+    color: var(--text-main) !important;
     background: transparent !important;
     border: none !important;
-    border-bottom: 2px solid #4a5568 !important;
+    border-bottom: 2px solid var(--text-sub) !important;
     border-radius: 0 !important;
     outline: none !important;
     box-shadow: none !important;
@@ -91,7 +91,7 @@
     top: 10px;
     left: 0;
     font-size: 1rem;
-    color: #a0aec0;
+    color: var(--text-sub);
     pointer-events: none;
     transition: 0.3s ease all;
     display: flex;

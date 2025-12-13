@@ -10,7 +10,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--card-border);
     padding-bottom: 0.5rem;
 }
 
@@ -26,7 +26,7 @@
 
 .view-all {
     font-size: 0.9rem;
-    color: var(--text-muted);
+    color: var(--text-sub);
     transition: 0.2s;
     display: flex;
     align-items: center;
@@ -34,7 +34,7 @@
 }
 
 .view-all:hover {
-    color: var(--text-main);
+    color: var(--accent);
     transform: translateX(5px); /* Trượt nhẹ sang phải khi hover */
 }
 
@@ -54,7 +54,7 @@
 .loading-state {
     text-align: center;
     padding: 4rem;
-    color: var(--text-muted);
+    color: var(--text-sub);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -65,10 +65,10 @@
 .empty-state {
     text-align: center;
     padding: 4rem;
-    color: var(--text-muted);
-    background: var(--bg-surface);
+    color: var(--text-sub);
+    background: var(--card-bg);
     border-radius: 12px;
-    border: 1px dashed var(--border-color);
+    border: 1px dashed var(--card-border);
 }
 
 .empty-state i {

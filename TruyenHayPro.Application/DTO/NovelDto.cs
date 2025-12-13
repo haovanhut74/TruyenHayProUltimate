@@ -10,4 +10,6 @@ public class NovelDto
     public string StatusName { get; set; } = string.Empty;
     public string CategoryName { get; set; } = string.Empty;
     public double Rating { get; set; }
+
+    public List<ChapterDto> Chapters { get; set; } = [];
 }

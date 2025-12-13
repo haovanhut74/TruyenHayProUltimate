@@ -8,12 +8,18 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Luật: Biến Novel (Entity) -> NovelDto (DTO)
+        // 1. Map Novel -> NovelDto
         CreateMap<Novel, NovelDto>()
-            // 1. Lấy tên thể loại từ Category.Name bỏ vào CategoryName
-            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-
-            // 2. Chuyển Enum trạng thái (1,2) thành chữ ("Ongoing"...)
+            // Map tên thể loại, nếu null thì để chuỗi rỗng để tránh lỗi NullReference
+            .ForMember(dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.Category.Name))
             .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.ToString()));
+
+        // 2. Map Chapter -> ChapterDto (QUAN TRỌNG: ĐÂY LÀ DÒNG BỊ THIẾU)
+        // Nếu thiếu dòng này, AutoMapper sẽ crash khi gặp list Chapters trong NovelDto
+        CreateMap<Chapter, ChapterDto>();
+
+        // 3. Map Category (Cho các API khác nếu cần)
+        CreateMap<Category, CategoryDto>();
     }
 }
