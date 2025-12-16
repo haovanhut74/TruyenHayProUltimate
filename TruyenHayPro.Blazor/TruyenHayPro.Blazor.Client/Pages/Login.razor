@@ -8,54 +8,70 @@
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
-@rendermode InteractiveServer
+
 
 <PageTitle>Đăng Nhập - TruyenHayPro</PageTitle>
 
-<div class="login-container">
-    <div class="background-overlay"></div>
-    <div class="login-card">
-        <div class="card-header">
-            <div class="logo-container"><i class="bi bi-yin-yang logo-spin"></i></div>
-            <h3>Thiên Đạo Kết Nối</h3>
-            <p>Nhập linh thức để phi thăng vào Tàng Kinh Các</p>
+<div class = "login-container">
+    <div class = "decor-orb orb-1"></div>
+    <div class = "decor-orb orb-2"></div>
+
+    <div class = "login-content">
+        <div class = "login-card">
+            <div class = "card-header">
+                <div class = "logo-wrapper">
+                    <i class = "bi bi-yin-yang logo-icon"></i>
+                </div>
+                <h3>Thiên Đạo Kết Nối</h3>
+                <p>Nhập linh thức để phi thăng vào Tàng Kinh Các</p>
+            </div>
+
+            <EditForm Model = "@loginModel" OnValidSubmit = "HandleLogin" FormName = "LoginForm">
+                <DataAnnotationsValidator/>
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class = "alert-box error">
+                        <i class = "bi bi-exclamation-triangle-fill"></i> @errorMessage
+                    </div>
+                }
+
+                <div class = "input-group">
+                    <InputText class = "modern-input" placeholder = "Tên đăng nhập / Đạo hiệu" @bind-Value = "loginModel.Username"/>
+                </div>
+                <ValidationMessage For = "@(() => loginModel.Username)" class = "val-msg"/>
+
+                <div class = "input-group">
+                    <InputText type = "password" class = "modern-input" placeholder = "Mật khẩu" @bind-Value = "loginModel.Password"/>
+                </div>
+                <ValidationMessage For = "@(() => loginModel.Password)" class = "val-msg"/>
+
+                <div class = "form-actions">
+                    <label class = "custom-checkbox">
+                        <input type = "checkbox"/>
+                        <span class = "checkmark"></span>
+                        <span class = "label-text">Lưu giữ thần hồn</span>
+                    </label>
+                    <a href = "#" class = "forgot-link">Quên mật khẩu?</a>
+                </div>
+
+                <button type = "submit" class = "btn-login-gradient" disabled = "@isLoading">
+                    @if (isLoading)
+                    {
+                        <span class = "spinner-border spinner-border-sm me-2"></span>
+                        <span>Đang kết nối...</span>
+                    }
+                    else
+                    {
+                        <span>Khai Mở Động Phủ <i class = "bi bi-arrow-right"></i></span>
+                    }
+                </button>
+            </EditForm>
+
+            <div class = "card-footer">
+                <p>Chưa có linh tịch? <a href = "/register" class = "register-link">Đăng ký nhập môn</a></p>
+            </div>
         </div>
-
-        <EditForm Model="@loginModel" OnValidSubmit="HandleLogin" FormName="LoginForm">
-            <DataAnnotationsValidator />
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert-box error"><i class="bi bi-fire"></i> @errorMessage</div>
-            }
-
-            <div class="magic-group">
-                <InputText id="username" class="magic-input" placeholder=" " @bind-Value="loginModel.Username" />
-                <label for="username" class="magic-label"><i class="bi bi-person-fill"></i> Tên đăng nhập</label>
-                <div class="magic-bar"></div>
-            </div>
-            <ValidationMessage For="@(() => loginModel.Username)" class="val-msg" />
-
-            <div class="magic-group">
-                <InputText type="password" id="password" class="magic-input" placeholder=" " @bind-Value="loginModel.Password" />
-                <label for="password" class="magic-label"><i class="bi bi-shield-lock-fill"></i> Mật khẩu</label>
-                <div class="magic-bar"></div>
-            </div>
-            <ValidationMessage For="@(() => loginModel.Password)" class="val-msg" />
-
-            <div class="form-actions">
-                <label class="remember-me">
-                    <input type="checkbox" /> <span class="checkmark"></span> Lưu giữ thần hồn
-                </label>
-                <a href="#" class="forgot-pass">Quên mật khẩu?</a>
-            </div>
-
-            <button type="submit" class="btn-login-storm" disabled="@isLoading">
-                @if(isLoading) { <span>Đang kết nối...</span> } else { <span>Khai Mở Động Phủ</span> }
-                <div class="liquid"></div>
-            </button>
-        </EditForm>
-
-        <div class="card-footer"><p>Chưa có linh tịch? <a href="/register">Đăng ký nhập môn</a></p></div>
     </div>
 </div>
 
@@ -68,6 +84,10 @@
     {
         isLoading = true;
         errorMessage = string.Empty;
+
+        // Giả lập delay chút cho hiệu ứng nó chạy :D
+        // await Task.Delay(1000); 
+
         var result = await AuthService.LoginAsync(loginModel);
 
         if (result.IsSuccess)
@@ -80,6 +100,8 @@
         {
             errorMessage = result.Errors != null ? string.Join(", ", result.Errors) : "Đăng nhập thất bại.";
         }
+
         isLoading = false;
     }
+
 }

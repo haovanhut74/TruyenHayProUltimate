@@ -1,4 +1,4 @@
-﻿/* ... (Giữ nguyên phần login-container, background-overlay, login-card cũ) ... */
+﻿/* ==================== CONTAINER & BACKGROUND ==================== */
 .login-container {
     position: relative;
     width: 100%;
@@ -6,201 +6,266 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--page-bg);
-    background-size: cover;
+    background-color: var(--page-bg);
+    overflow: hidden;
+    padding: 1.5rem;
 }
 
-.background-overlay {
+/* Hiệu ứng quả cầu ánh sáng (Orb) làm nền */
+.decor-orb {
     position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at center, rgba(20, 30, 48, 0.85), rgba(36, 59, 85, 0.95));
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: 0;
+    animation: float 10s infinite ease-in-out;
+}
+
+.orb-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--accent);
+    top: -50px;
+    left: -50px;
+}
+
+.orb-2 {
+    width: 250px;
+    height: 250px;
+    background: #3b82f6; /* Màu xanh bổ trợ */
+    bottom: -50px;
+    right: -50px;
+    animation-delay: -5s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(30px, 30px);
+    }
+}
+
+/* ==================== LOGIN CARD ==================== */
+.login-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 420px;
 }
 
 .login-card {
-    position: relative;
-    width: 400px;
-    padding: 3rem 2rem;
     background: var(--card-bg);
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(16px);
-    z-index: 10;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 20px 40px -10px var(--shadow-color);
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* HEADER */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== HEADER ==================== */
 .card-header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
-.logo-container {
-    font-size: 3rem;
-    color: #00c6ff;
-    margin-bottom: 0.5rem;
+.logo-wrapper {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, var(--accent), #3b82f6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
+
+.logo-icon {
+    font-size: 2rem;
+    color: white;
+    animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .card-header h3 {
-    color: var(--text-main);
-    margin: 0;
+    font-size: 1.8rem;
     font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
 }
 
 .card-header p {
     color: var(--text-sub);
-    font-size: 0.85rem;
-    margin-top: 5px;
+    font-size: 0.95rem;
 }
 
-/* --- INPUT FIX (Bản sửa lỗi đè chữ) --- */
-.magic-group {
+/* ==================== INPUT FIELDS ==================== */
+.input-group {
     position: relative;
-    margin-bottom: 2.5rem; /* Tăng khoảng cách dưới để label không đè */
-    width: 100%;
-}
-
-.magic-input {
-    width: 100%;
-    padding: 12px 0 8px 0; /* Chỉnh lại padding */
-    font-size: 1rem;
-    color: var(--text-main) !important;
-    background: transparent !important;
-    border: none !important;
-    border-bottom: 2px solid var(--text-sub) !important;
-    border-radius: 0 !important;
-    outline: none !important;
-    box-shadow: none !important;
-    z-index: 1;
-    position: relative;
-    height: 40px; /* Cố định chiều cao */
-}
-
-/* Kháng Autofill nền trắng */
-.magic-input:-webkit-autofill,
-.magic-input:-webkit-autofill:hover,
-.magic-input:-webkit-autofill:focus,
-.magic-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #171c24 inset !important; /* Màu nền trùng card */
-    -webkit-text-fill-color: white !important;
-    transition: background-color 5000s ease-in-out 0s;
-}
-
-/* Label */
-.magic-label {
-    position: absolute;
-    top: 10px;
-    left: 0;
-    font-size: 1rem;
-    color: var(--text-sub);
-    pointer-events: none;
-    transition: 0.3s ease all;
+    margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
-    gap: 8px;
-    z-index: 0;
 }
 
-.magic-bar {
+.input-icon {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #00c6ff;
-    transition: width 0.4s ease;
-    z-index: 2;
+    left: 16px;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    pointer-events: none;
+    transition: 0.3s;
 }
 
-/* Logic đẩy Label lên */
-.magic-input:focus ~ .magic-label,
-.magic-input:not(:placeholder-shown) ~ .magic-label {
-    top: -22px; /* Đẩy cao hơn nữa */
-    font-size: 0.85rem;
-    color: #00c6ff;
-    font-weight: 600;
-}
-
-.magic-input:focus ~ .magic-bar {
+.modern-input {
     width: 100%;
+    padding: 14px 16px 14px 48px; /* Padding trái lớn để né icon */
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--text-main);
+    transition: all 0.3s ease;
+    outline: none;
 }
 
-/* --- BUTTON & FOOTER --- */
+.modern-input::placeholder {
+    color: var(--text-muted);
+}
+
+.modern-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
+    background: var(--hover-bg);
+}
+
+.modern-input:focus + .input-icon { /* Đổi màu icon khi focus */
+    color: var(--accent);
+}
+
+/* ==================== ACTIONS & BUTTON ==================== */
 .form-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
     font-size: 0.9rem;
-    color: #a0aec0;
 }
 
-.remember-me {
+.custom-checkbox {
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
+    color: var(--text-sub);
 }
 
-.forgot-pass {
-    color: #00c6ff;
+.custom-checkbox input {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+}
+
+.forgot-link {
+    color: var(--accent);
     text-decoration: none;
+    font-weight: 600;
 }
 
-.btn-login-storm {
+.forgot-link:hover {
+    text-decoration: underline;
+}
+
+.btn-login-gradient {
     width: 100%;
     padding: 14px;
     border: none;
-    background: #0072ff;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), #6366f1);
     color: white;
-    font-weight: bold;
-    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
-    transition: 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.btn-login-storm:hover {
-    box-shadow: 0 0 20px rgba(0, 114, 255, 0.6);
+.btn-login-gradient:hover:not(:disabled) {
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
 }
 
-.btn-login-storm:disabled {
+.btn-login-gradient:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+    background: var(--text-muted);
+    box-shadow: none;
 }
 
+/* ==================== FOOTER ==================== */
 .card-footer {
+    margin-top: 1.5rem;
     text-align: center;
-    margin-top: 2rem;
-    color: #718096;
-    font-size: 0.9rem;
+    color: var(--text-sub);
+    font-size: 0.95rem;
 }
 
-.card-footer a {
-    color: #fff;
-    font-weight: 600;
-    margin-left: 5px;
+.register-link {
+    color: var(--accent);
+    font-weight: 700;
     text-decoration: none;
+    margin-left: 5px;
 }
 
-.alert-box.error {
-    background: rgba(220, 38, 38, 0.2);
-    border: 1px solid rgba(220, 38, 38, 0.5);
-    color: #fca5a5;
-    padding: 10px;
+.register-link:hover {
+    text-decoration: underline;
+}
+
+/* ==================== ALERT ==================== */
+.alert-box {
+    padding: 12px;
     border-radius: 8px;
     margin-bottom: 1.5rem;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
+}
+
+.alert-box.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .val-msg {
-    color: #ff6b6b;
+    color: #ef4444;
     font-size: 0.8rem;
-    display: block;
     margin-top: -10px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: 4px;
 }
