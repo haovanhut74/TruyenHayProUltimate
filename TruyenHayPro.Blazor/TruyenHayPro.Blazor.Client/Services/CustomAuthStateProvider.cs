@@ -1,71 +1,56 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net.Http.Json;
 using System.Security.Claims;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
-using TruyenHayPro.Blazor.Client.Utils;
+using TruyenHayPro.Shared.DTO;
 
 namespace TruyenHayPro.Blazor.Client.Services;
 
 public class CustomAuthStateProvider : AuthenticationStateProvider
 {
-    private readonly ILocalStorageService _localStorage;
     private readonly HttpClient _http;
+    private ClaimsPrincipal _anonymous = new(new ClaimsIdentity());
 
-    // Biến này để lưu "Thần Hồn" trong RAM, tránh đọc ổ cứng liên tục
-    private ClaimsPrincipal? _cachedUser;
-
-    public CustomAuthStateProvider(ILocalStorageService localStorage, HttpClient http)
+    public CustomAuthStateProvider(HttpClient http)
     {
-        _localStorage = localStorage;
         _http = http;
     }
 
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        // 1. Nếu đã có trong RAM thì trả về ngay (Tốc độ ánh sáng)
-        if (_cachedUser != null)
+        try
         {
-            return new AuthenticationState(_cachedUser);
+            var response = await _http.GetAsync("/bff/auth/user-info");
+            if (!response.IsSuccessStatusCode)
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+
+            var user = await response.Content.ReadFromJsonAsync<UserInfoDto>();
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, user!.FullName),
+                new("UserId", user.Id.ToString()),
+                new(ClaimTypes.Email, user.Email ?? "")
+            };
+
+            var identity = new ClaimsIdentity(claims, "BffAuth");
+            return new AuthenticationState(new ClaimsPrincipal(identity));
         }
-
-        // 2. Nếu chưa có, mới đi đọc LocalStorage (Tốn thời gian)
-        var token = await _localStorage.GetItemAsync<string>("authToken");
-
-        if (string.IsNullOrWhiteSpace(token))
+        catch
         {
-            // Không có token -> Khách vãng lai
-            _cachedUser = new ClaimsPrincipal(new ClaimsIdentity());
+            return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
-        else
-        {
-            // Có token -> Thiết lập danh tính
-            _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var claims = JwtParser.ParseClaimsFromJwt(token);
-            var identity = new ClaimsIdentity(claims, "jwt");
-            _cachedUser = new ClaimsPrincipal(identity);
-        }
-
-        return new AuthenticationState(_cachedUser);
     }
 
-    public void NotifyUserLoggedIn(string token)
+
+    public void NotifyUserLoggedIn()
     {
-        var claims = JwtParser.ParseClaimsFromJwt(token);
-        var identity = new ClaimsIdentity(claims, "jwt");
-        _cachedUser = new ClaimsPrincipal(identity); // Lưu ngay vào RAM
-
-        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-        var authState = Task.FromResult(new AuthenticationState(_cachedUser));
-        NotifyAuthenticationStateChanged(authState);
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 
     public void NotifyUserLoggedOut()
     {
-        _cachedUser = new ClaimsPrincipal(new ClaimsIdentity()); // Xóa khỏi RAM
-        _http.DefaultRequestHeaders.Authorization = null;
-
-        var authState = Task.FromResult(new AuthenticationState(_cachedUser));
-        NotifyAuthenticationStateChanged(authState);
+        NotifyAuthenticationStateChanged(
+            Task.FromResult(new AuthenticationState(_anonymous))
+        );
     }
 }

@@ -92,8 +92,7 @@
 
         if (result.IsSuccess)
         {
-            await LocalStorage.SetItemAsync("authToken", result.Value.Token);
-            ((CustomAuthStateProvider)AuthStateProvider).NotifyUserLoggedIn(result.Value.Token);
+            ((CustomAuthStateProvider)AuthStateProvider).NotifyUserLoggedIn();
             Navigation.NavigateTo("/");
         }
         else

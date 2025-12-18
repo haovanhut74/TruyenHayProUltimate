@@ -40,9 +40,8 @@ public class AuthService : IAuthService
     {
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("/api/auth/login", request);
+            var response = await _httpClient.PostAsJsonAsync("/bff/auth/login", request);
             var content = await response.Content.ReadAsStringAsync();
-            
 
             if (!response.IsSuccessStatusCode)
             {
@@ -68,13 +67,10 @@ public class AuthService : IAuthService
     // Triển khai hàm Logout
     public async Task LogoutAsync()
     {
-        // 1. Xóa Token khỏi túi không gian
-        await _localStorage.RemoveItemAsync("authToken");
+        // 1. Gọi BFF để xóa HttpOnly Cookie
+        await _httpClient.PostAsync("/bff/auth/logout", null);
 
-        // 2. Báo cho Hộ Pháp biết là đã đi rồi
+        // 2. Cập nhật lại AuthenticationState
         ((CustomAuthStateProvider)_authStateProvider).NotifyUserLoggedOut();
-
-        // 3. Xóa header mặc định
-        _httpClient.DefaultRequestHeaders.Authorization = null;
     }
 }

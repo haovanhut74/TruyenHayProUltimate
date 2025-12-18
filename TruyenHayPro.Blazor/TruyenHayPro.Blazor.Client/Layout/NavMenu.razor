@@ -4,83 +4,82 @@
 @inject IAuthService AuthService
 @inject NavigationManager Navigation
 
-<nav class="navbar">
-    <div class="container-fluid nav-container">
+<nav class = "navbar">
+    <div class = "container-fluid nav-container">
 
-        <a class="brand-link" href="">
-            <div class="brand-icon">
-                <i class="bi bi-book-half"></i>
+        <a class = "brand-link" href = "">
+            <div class = "brand-icon">
+                <i class = "bi bi-book-half"></i>
             </div>
-            <span class="brand-text">TruyenHay<span class="pro-tag">Pro</span></span>
+            <span class = "brand-text">TruyenHay<span class = "pro-tag">Pro</span></span>
         </a>
-        
 
-        <div class="@NavMenuCssClass nav-menu-content">
-            <div class="nav-links">
-                <NavLink class="nav-item" href="" Match="NavLinkMatch.All">Trang Chủ</NavLink>
-                <NavLink class="nav-item" href="the-loai">Thể Loại</NavLink>
-                <NavLink class="nav-item" href="bang-xep-hang">BXH</NavLink>
+
+        <div class = "@NavMenuCssClass nav-menu-content">
+            <div class = "nav-links">
+                <NavLink class = "nav-item" href = "" Match = "NavLinkMatch.All">Trang Chủ</NavLink>
+                <NavLink class = "nav-item" href = "the-loai">Thể Loại</NavLink>
+                <NavLink class = "nav-item" href = "bang-xep-hang">BXH</NavLink>
             </div>
 
-            <div class="nav-actions">
-                <div class="search-box">
-                    <i class="bi bi-search"></i>
-                    <input type="text" placeholder="Tìm kiếm..." />
+            <div class = "nav-actions">
+                <div class = "search-box">
+                    <i class = "bi bi-search"></i>
+                    <input type = "text" placeholder = "Tìm kiếm..."/>
                 </div>
-                
-                <ThemeToggle />
+
+                <ThemeToggle/>
 
                 @if (isClientLoaded)
                 {
-                    <AuthorizeView>
+                    <AuthorizeView Context = "auth">
                         <Authorized>
-                            <div class="user-area">
-                                <button class="user-trigger" @onclick="ToggleUserMenu">
-                                    <span class="avatar-circle">
-                                        @(context.User.FindFirst("FullName")?.Value.Substring(0, 1).ToUpper() ?? "U")
+                            <div class = "user-area">
+                                <button class = "user-trigger" @onclick = "ToggleUserMenu">
+                                    <span class = "avatar-circle">
+                                        @(auth.User.Identity?.Name?.Substring(0, 1).ToUpper() ?? "U")
                                     </span>
-                                    <span class="user-name">
-                                        @context.User.FindFirst("FullName")?.Value
+                                    <span class = "user-name">
+                                        @auth.User.Identity?.Name
                                     </span>
-                                    <i class="bi bi-chevron-down arrow-icon @(showUserMenu ? "rotate" : "")"></i>
+                                    <i class = "bi bi-chevron-down arrow-icon @(showUserMenu ? "rotate" : "")"></i>
                                 </button>
 
                                 @if (showUserMenu)
                                 {
-                                    <div class="user-dropdown-menu">
+                                    <div class = "user-dropdown-menu">
                                         <div class="dropdown-header">
-                                            <strong>@context.User.FindFirst("FullName")?.Value</strong>
                                             <span>Đạo hữu</span>
                                         </div>
-                                        <div class="dropdown-divider"></div>
-                                        <a href="tu-truyen" class="dropdown-item">
-                                            <i class="bi bi-bookmark-heart"></i> Tủ Truyện
+                                        <div class = "dropdown-divider"></div>
+                                        <a href = "tu-truyen" class = "dropdown-item">
+                                            <i class = "bi bi-bookmark-heart"></i> Tủ Truyện
                                         </a>
-                                        <a href="ho-so" class="dropdown-item">
-                                            <i class="bi bi-person-gear"></i> Hồ Sơ
+                                        <a href = "ho-so" class = "dropdown-item">
+                                            <i class = "bi bi-person-gear"></i> Hồ Sơ
                                         </a>
-                                        <a href="create-novel" class="dropdown-item">
-                                            <i class="bi bi-person-gear"></i> Sáng tác
+                                        <a href = "create-novel" class = "dropdown-item">
+                                            <i class = "bi bi-person-gear"></i> Sáng tác
                                         </a>
-                                        <div class="dropdown-divider"></div>
-                                        <button class="dropdown-item text-danger" @onclick="HandleLogout">
-                                            <i class="bi bi-box-arrow-right"></i> Đăng Xuất
+                                        <div class = "dropdown-divider"></div>
+                                        <button class = "dropdown-item text-danger" @onclick = "HandleLogout">
+                                            <i class = "bi bi-box-arrow-right"></i> Đăng Xuất
                                         </button>
                                     </div>
-                                    <div class="click-overlay" @onclick="ToggleUserMenu"></div>
+                                    <div class = "click-overlay" @onclick = "ToggleUserMenu"></div>
                                 }
                             </div>
                         </Authorized>
                         <NotAuthorized>
-                            <NavLink class="login-btn-nav" href="login">
-                                <i class="bi bi-person-circle"></i> Đăng nhập
+                            <NavLink class = "login-btn-nav" href = "login">
+                                <i class = "bi bi-person-circle"></i> Đăng nhập
                             </NavLink>
                         </NotAuthorized>
                     </AuthorizeView>
                 }
                 else
                 {
-                    <div class="auth-skeleton"></div>
+                    <div class = "auth-skeleton"></div>
                 }
             </div>
         </div>
@@ -90,7 +89,7 @@
 @code {
     private bool collapseNavMenu = true;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-    
+
     // Biến cờ: Kiểm soát việc hiển thị Auth
     private bool isClientLoaded = false;
     private bool showUserMenu = false;
@@ -113,6 +112,7 @@
     {
         await AuthService.LogoutAsync();
         showUserMenu = false;
-        Navigation.NavigateTo("/", forceLoad: true);
+        Navigation.NavigateTo("/");
     }
+
 }

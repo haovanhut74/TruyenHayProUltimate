@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using System.Security.Claims;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.Features.Auth.Login;
 using TruyenHayPro.Application.Features.Auth.Register;
 using TruyenHayPro.Shared.Contracts.Identity;
@@ -39,5 +41,13 @@ public static class AuthEndpoints
             var result = await sender.Send(command);
             return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
         });
+        group.MapGet("/me", async (ClaimsPrincipal user, IIdentityService identityService) =>
+        {
+            var userId = identityService.GetUserId(user);
+            if (userId == Guid.Empty) return Results.Unauthorized();
+
+            var info = await identityService.GetUserInfoAsync(userId);
+            return Results.Ok(info); // { Id, Username, FullName, Email }
+        }).RequireAuthorization();
     }
 }

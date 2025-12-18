@@ -2,11 +2,13 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Domain.Common.Entities;
 using TruyenHayPro.Shared.Contracts.Identity;
+using TruyenHayPro.Shared.DTO;
 using TruyenHayPro.Shared.Wrapper;
 
 // Trỏ về User entity của anh
@@ -58,15 +60,38 @@ public class IdentityService : IIdentityService
         return Result<AuthResponse>.Success(new AuthResponse(user.Id, user.UserName!, user.Email!, token));
     }
 
+    public Guid GetUserId(ClaimsPrincipal user)
+    {
+        var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        return Guid.TryParse(userId, out var id) ? id : Guid.Empty;
+    }
+
+    public async Task<UserInfoDto> GetUserInfoAsync(Guid userId)
+    {
+        var user = await _userManager.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(u => new UserInfoDto
+            {
+                Id = u.Id,
+                Username = u.UserName!,
+                FullName = u.FullName,
+                Email = u.Email
+            })
+            .FirstOrDefaultAsync();
+
+        return user!;
+    }
+
     private string GenerateJwtToken(ApplicationUser user)
     {
-        var key = Encoding.ASCII.GetBytes(_configuration["JwtSettings:Key"]!);
+        var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]!);
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim("FullName", user.FullName ?? user.UserName!)
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.UserName!),
+            new(ClaimTypes.Email, user.Email!),
+            new("FullName", user.FullName ?? user.UserName!)
         };
 
         var tokenDescriptor = new SecurityTokenDescriptor

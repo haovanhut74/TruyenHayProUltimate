@@ -16,7 +16,7 @@ public class ClientNovelService : INovelService
     // --- CÁC HÀM LẤY DỮ LIỆU ---
     public async Task<Guid> CreateNovelAsync(CreateNovelDto dto)
     {
-        var response = await _http.PostAsJsonAsync("api/novels", dto);
+        var response = await _http.PostAsJsonAsync("bff/novels", dto);
 
         if (response.IsSuccessStatusCode)
         {
@@ -32,7 +32,7 @@ public class ClientNovelService : INovelService
     {
         try
         {
-            return await _http.GetFromJsonAsync<List<NovelDto>>($"api/novels/home?count={count}") ?? [];
+            return await _http.GetFromJsonAsync<List<NovelDto>>($"bff/novels/home?count={count}") ?? [];
         }
         catch
         {
@@ -44,7 +44,7 @@ public class ClientNovelService : INovelService
     {
         try
         {
-            return await _http.GetFromJsonAsync<NovelDto>($"api/novels/{id}");
+            return await _http.GetFromJsonAsync<NovelDto>($"bff/novels/{id}");
         }
         catch
         {
@@ -63,7 +63,7 @@ public class ClientNovelService : INovelService
         try
         {
             // Gọi đến API vừa tạo ở Bước 2
-            return await _http.GetFromJsonAsync<List<CategoryDto>>("api/categories") ?? [];
+            return await _http.GetFromJsonAsync<List<CategoryDto>>("bff/categories") ?? [];
         }
         catch
         {
