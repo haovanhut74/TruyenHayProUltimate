@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Security.Claims;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.DTO;
@@ -15,7 +16,29 @@ public static class NovelsEndpoints
         group.MapGet("{id:guid}", GetNovelById);
 
         // Cập nhật hàm POST
-        group.MapPost("/", CreateNovel);
+        group.MapPost("/", CreateNovel)
+            .RequireAuthorization();
+
+        group.MapGet("/my", async (INovelService novelService) =>
+            {
+                var novels = await novelService.GetMyNovelsAsync();
+                return Results.Ok(novels);
+            })
+            .RequireAuthorization();
+        group.MapPut("/", async (UpdateNovelDto dto, INovelService service) =>
+        {
+            await service.UpdateNovelAsync(dto);
+            return Results.Ok();
+        }).RequireAuthorization();
+
+        group.MapDelete("/{id:guid}", async (
+            Guid id,
+            INovelService service) =>
+        {
+            await service.DeleteNovelAsync(id);
+            return Results.Ok();
+        }).RequireAuthorization();
+
     }
     // --- CÁC HÀM XỬ LÝ (HANDLERS) ---
 

@@ -17,7 +17,7 @@ public class NovelConfiguration : IEntityTypeConfiguration<Novel>
             .HasMaxLength(255) // Giới hạn độ dài
             .IsRequired();
         builder.Property(n => n.Description)
-            .HasMaxLength(1000);
+            .HasMaxLength(10000);
 
         // 4. Quan hệ: 1 Novel có nhiều Chapters
         // Khi xóa Novel -> Xóa luôn tất cả Chapter (Cascade Delete)

@@ -1,0 +1,59 @@
+﻿@page "/truyen/sua/{Id:guid}"
+@attribute [Authorize]
+
+@using Microsoft.AspNetCore.Authorization
+@using TruyenHayPro.Application.Common.Interfaces.Services
+@inject INovelService NovelService
+@inject NavigationManager Navigation
+
+<PageTitle>Sửa Truyện</PageTitle>
+
+<h3 class="mb-4">✏️ Sửa Truyện</h3>
+
+@if (isLoading)
+{
+    <p>Đang tải dữ liệu...</p>
+}
+else
+{
+    <EditForm Model="model" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label class="form-label">Tên truyện</label>
+            <InputText class="form-control" @bind-Value="model.Title" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <InputTextArea class="form-control" rows="5"
+                           @bind-Value="model.Description" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Thể loại</label>
+            <InputSelect class="form-select" @bind-Value="model.CategoryId">
+                @foreach (var c in categories)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Ảnh bìa</label>
+            <InputText class="form-control"
+                       @bind-Value="model.CoverImageUrl" />
+        </div>
+
+        <button class="btn btn-primary">
+            💾 Lưu thay đổi
+        </button>
+        <button type="button"
+                class="btn btn-secondary ms-2"
+                @onclick="GoBack">
+            ⬅ Quay lại
+        </button>
+    </EditForm>
+}

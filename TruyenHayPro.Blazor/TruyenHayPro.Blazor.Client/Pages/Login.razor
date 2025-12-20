@@ -1,13 +1,8 @@
 ﻿@page "/login"
 @using TruyenHayPro.Shared.Contracts.Identity
 @using TruyenHayPro.Blazor.Client.Services.Interface
-@using Blazored.LocalStorage
-@using Microsoft.AspNetCore.Components.Authorization
-@using TruyenHayPro.Blazor.Client.Services
 @inject IAuthService AuthService
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
-@inject ILocalStorageService LocalStorage
 
 
 <PageTitle>Đăng Nhập - TruyenHayPro</PageTitle>
@@ -85,19 +80,15 @@
         isLoading = true;
         errorMessage = string.Empty;
 
-        // Giả lập delay chút cho hiệu ứng nó chạy :D
-        // await Task.Delay(1000); 
-
         var result = await AuthService.LoginAsync(loginModel);
 
         if (result.IsSuccess)
         {
-            ((CustomAuthStateProvider)AuthStateProvider).NotifyUserLoggedIn();
-            Navigation.NavigateTo("/");
+            Navigation.NavigateTo("/", forceLoad: true);
         }
         else
         {
-            errorMessage = result.Errors != null ? string.Join(", ", result.Errors) : "Đăng nhập thất bại.";
+            errorMessage = string.Join(", ", result.Errors);
         }
 
         isLoading = false;

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TruyenHayPro.Application.Common.Interfaces.Repositories;
 using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.DTO;
@@ -10,17 +11,19 @@ namespace TruyenHayPro.Infrastructure.Services;
 public class NovelService : INovelService
 {
     private readonly INovelRepository _novelRepository; // Thủ kho
-
+    private readonly ICurrentUserService _currentUser;
     private readonly IMapper _mapper; // Máy biến hình
 
 // --- THÊM CÁI NÀY ---
     private readonly ITagRepository _tagRepository;
 
-    public NovelService(INovelRepository novelRepository, IMapper mapper, ITagRepository tagRepository)
+    public NovelService(INovelRepository novelRepository, IMapper mapper, ITagRepository tagRepository,
+        ICurrentUserService currentUser)
     {
         _novelRepository = novelRepository;
         _mapper = mapper;
         _tagRepository = tagRepository;
+        _currentUser = currentUser;
     }
 
     // 1. Lấy danh sách cho trang chủ
@@ -49,6 +52,7 @@ public class NovelService : INovelService
 
     public async Task<Guid> CreateNovelAsync(CreateNovelDto dto)
     {
+        var userId = _currentUser.UserId;
         // 1. Tạo Entity từ DTO (Map thủ công cho chuẩn xác logic)
         var novel = new Novel
         {
@@ -62,6 +66,7 @@ public class NovelService : INovelService
             Rating = 0,
             CreatedDate = DateTimeOffset.UtcNow,
             LastModifiedAt = DateTimeOffset.UtcNow,
+            CreatedBy = userId,
             CategoryId = dto.CategoryId // Gắn Category
         };
 
@@ -80,5 +85,68 @@ public class NovelService : INovelService
 
         // 3. Lưu vào DB
         return await _novelRepository.AddAsync(novel);
+    }
+
+    public async Task<List<NovelDto>> GetMyNovelsAsync()
+    {
+        if (!_currentUser.IsAuthenticated)
+            return [];
+
+        var userId = _currentUser.UserId;
+
+        var novels = await _novelRepository
+            .Query()
+            .Where(n => n.CreatedBy == userId)
+            .OrderByDescending(n => n.CreatedDate)
+            .ToListAsync();
+
+        return _mapper.Map<List<NovelDto>>(novels);
+    }
+
+    public async Task UpdateNovelAsync(UpdateNovelDto dto)
+    {
+        if (!_currentUser.IsAuthenticated)
+            throw new UnauthorizedAccessException();
+
+        var novel = await _novelRepository.GetNovelByIdAsync(dto.Id);
+        if (novel == null)
+            throw new Exception("Truyện không tồn tại");
+
+        if (novel.CreatedBy != _currentUser.UserId)
+            throw new UnauthorizedAccessException("Không phải truyện của bạn");
+
+        novel.Title = dto.Title;
+        novel.Description = dto.Description;
+        novel.CategoryId = dto.CategoryId;
+        novel.CoverImage = dto.CoverImageUrl;
+        novel.LastModifiedAt = DateTimeOffset.UtcNow;
+
+        await _novelRepository.UpdateAsync(novel);
+    }
+
+    public async Task DeleteNovelAsync(Guid id)
+    {
+        if (!_currentUser.IsAuthenticated)
+            throw new UnauthorizedAccessException();
+
+        var novel = await _novelRepository.GetNovelByIdAsync(id);
+        if (novel == null)
+            throw new Exception("Truyện không tồn tại");
+
+        if (novel.CreatedBy != _currentUser.UserId)
+            throw new UnauthorizedAccessException("Không phải truyện của bạn");
+
+        await _novelRepository.DeleteAsync(novel);
+    }
+
+    public async Task<List<CategoryDto>> GetCategoriesAsync()
+    {
+        var categories = await _novelRepository
+            .Query()
+            .Select(n => n.Category)
+            .Distinct()
+            .ToListAsync();
+
+        return _mapper.Map<List<CategoryDto>>(categories);
     }
 }

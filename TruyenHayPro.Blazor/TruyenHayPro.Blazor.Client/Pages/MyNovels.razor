@@ -1,0 +1,81 @@
+﻿@page "/truyen-cua-toi"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+@using TruyenHayPro.Application.Common.Interfaces.Services
+@inject INovelService NovelService
+@inject IJSRuntime JS
+<PageTitle>Tàng Thư Các Của Tôi</PageTitle>
+
+<div class = "my-novels-container">
+    <div class = "header-section">
+        <div class = "header-title">
+            <h3><i class = "bi bi-journal-album"></i> Tàng Thư Các</h3>
+            <p>Quản lý @(novels?.Count ?? 0) tác phẩm</p>
+        </div>
+        <a href = "create-novel" class = "btn-create-new">
+            <i class = "bi bi-quill-pen"></i> Khai Ấn Truyện Mới
+        </a>
+    </div>
+
+    @if (isLoading)
+    {
+        /* ... Giữ nguyên phần loading ... */
+    }
+    else if (novels == null || novels.Count == 0)
+    {
+        /* ... Giữ nguyên phần empty state ... */
+    }
+    else
+    {
+        <div class = "novels-list">
+            @foreach (var novel in novels)
+            {
+                <div class = "manage-card-horizontal">
+                    <div class = "card-thumb-side">
+                        <img
+                            src = "@(string.IsNullOrEmpty(novel.CoverImage) ? "https://placehold.co/200x300/1e1e1e/FFF?text=No+Cover" : novel.CoverImage)"
+                            alt = "@novel.Title"
+                        />
+
+                        <span class = "status-badge @(novel.StatusName == "Full" ? "full" : "ongoing")">
+                            @novel.StatusName
+                        </span>
+                    </div>
+
+                    <div class = "card-content-side">
+                        <div class = "content-header">
+                            <h5 class = "novel-title" title = "@novel.Title">
+                                <a href = "/novel/@novel.Id">@novel.Title</a>
+                            </h5>
+                            <div class = "novel-meta">
+                                <span class = "cate-tag"><i class = "bi bi-tag-fill"></i> @novel.CategoryName</span>
+                                <span class = "date-tag"><i class = "bi bi-calendar3"></i> @novel.CreatedDate.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+
+                        <p class = "novel-desc">@novel.Description</p>
+
+                        <div class = "action-bar-horizontal">
+                            <a href = "/create-chapter/@novel.Id" class = "btn-action primary">
+                                <i class = "bi bi-file-earmark-plus"></i> Thêm chương
+                            </a>
+
+                            <div class = "sub-actions">
+                                <a href = "/novel/@novel.Id" class = "btn-icon" title = "Xem">
+                                    <i class = "bi bi-eye"></i>
+                                </a>
+                                <a href = "/truyen/sua/@novel.Id" class = "btn-icon" title = "Sửa">
+                                    <i class = "bi bi-pencil-square"></i>
+                                </a>
+                                <button class="btn btn-sm btn-outline-danger"
+                                        @onclick="() => ConfirmDelete(novel.Id)">
+                                    🗑 Xoá
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

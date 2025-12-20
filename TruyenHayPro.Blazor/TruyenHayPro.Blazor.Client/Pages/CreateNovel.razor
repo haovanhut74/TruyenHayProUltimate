@@ -2,14 +2,10 @@
 @using TruyenHayPro.Application.DTO
 @using TruyenHayPro.Blazor.Client.Services
 @using TruyenHayPro.Application.Common.Interfaces.Services
-@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
-
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 @inject INovelService NovelService
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
 
 <PageTitle>Đăng Truyện Mới - TruyenHayPro</PageTitle>
 

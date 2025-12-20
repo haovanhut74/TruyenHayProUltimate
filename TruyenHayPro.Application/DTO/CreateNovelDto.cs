@@ -12,7 +12,7 @@ public class CreateNovelDto
     [Required] public string Author { get; set; }
 
     public string? CoverImageUrl { get; set; } // Tạm thời nhập link ảnh (string)
-    
+    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.Now;
 
     // --- QUAN TRỌNG ---
     [Required] public Guid CategoryId { get; set; } // Truyện thuộc thể loại nào?

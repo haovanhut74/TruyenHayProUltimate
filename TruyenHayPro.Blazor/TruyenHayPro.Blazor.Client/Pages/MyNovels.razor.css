@@ -1,0 +1,207 @@
+﻿/* Container */
+.my-novels-container {
+    max-width: 1000px; /* Thu hẹp lại chút cho gọn mắt với dạng list */
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Header giữ nguyên */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+/* LAYOUT DANH SÁCH (1 Hàng 1 Tác phẩm) */
+.novels-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Card Ngang */
+.manage-card-horizontal {
+    display: flex;
+    flex-direction: row; /* Xếp ngang */
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    overflow: hidden;
+    height: 220px; /* Chiều cao cố định cho đẹp */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.manage-card-horizontal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: var(--card-border);
+}
+
+/* Phần Ảnh (Bên trái) */
+.card-thumb-side {
+    width: 160px; /* Chiều rộng cố định của ảnh */
+    flex-shrink: 0;
+    position: relative;
+    background: var(--page-bg);
+}
+
+.card-thumb-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Badge trạng thái nằm góc ảnh */
+.status-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px; /* Đổi sang trái cho thuận mắt */
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: var(--text-main);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.status-badge.full {
+    background-color: #10b981;
+}
+
+.status-badge.ongoing {
+    background-color: #f59e0b;
+}
+
+/* Phần Nội dung (Bên phải) */
+.card-content-side {
+    flex: 1;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Đẩy action bar xuống đáy */
+}
+
+/* Header của nội dung */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.novel-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.novel-title a {
+    color: var(--text-main);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.novel-title a:hover {
+    color: #4f46e5;
+}
+
+.novel-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0; /* Không cho meta bị co lại */
+}
+
+.novel-desc {
+    font-size: 0.95rem;
+    color: #4b5563;
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+
+    /* Cắt dòng văn bản mô tả */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Chỉ hiện 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Action Bar bên dưới */
+.action-bar-horizontal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--card-border);
+    padding-top: 1rem;
+}
+
+.btn-action.primary {
+    background: var(--accent-hover);
+    color: var(--text-main);
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-action.primary:hover {
+    background: var(--accent-hover);
+    color: var(--text-main);
+}
+
+.sub-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: #6b7280;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    border-color: #4f46e5;
+    color: #4f46e5;
+    background: var(--hover-bg);
+}
+
+/* --- RESPONSIVE MOBILE --- */
+/* Khi màn hình nhỏ (điện thoại), tự động quay về dạng dọc */
+@media (max-width: 768px) {
+    .manage-card-horizontal {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .card-thumb-side {
+        width: 100%;
+        height: 200px; /* Chiều cao ảnh trên mobile */
+    }
+
+    .content-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .novel-meta {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

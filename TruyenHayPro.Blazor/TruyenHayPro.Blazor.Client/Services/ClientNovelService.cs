@@ -28,6 +28,44 @@ public class ClientNovelService : INovelService
         throw new Exception($"Lỗi tạo truyện: {errorContent}");
     }
 
+    public async Task<List<NovelDto>> GetMyNovelsAsync()
+    {
+        try
+        {
+            // 🔐 Gọi BFF, BFF tự lấy user từ Cookie + JWT
+            return await _http.GetFromJsonAsync<List<NovelDto>>(
+                "bff/novels/my"
+            ) ?? [];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    public async Task UpdateNovelAsync(UpdateNovelDto dto)
+    {
+        var response = await _http.PutAsJsonAsync("bff/novels", dto);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Lỗi cập nhật truyện: {errorContent}");
+        }
+    }
+
+    public async Task DeleteNovelAsync(Guid id)
+    {
+        var response = await _http.DeleteAsync($"bff/novels/{id}");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Lỗi xóa truyện: {errorContent}");
+        }
+    }
+
+
     public async Task<List<NovelDto>> GetNovelsHomeAsync(int count)
     {
         try

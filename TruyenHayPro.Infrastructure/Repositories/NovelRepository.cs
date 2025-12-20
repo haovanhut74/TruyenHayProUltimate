@@ -24,6 +24,11 @@ public class NovelRepository : INovelRepository
             .ToListAsync();
     }
 
+    public IQueryable<Novel> Query()
+    {
+        return _context.Novels.AsNoTracking();
+    }
+
     // 2. Lấy chi tiết truyện
     public async Task<Novel?> GetNovelByIdAsync(Guid id)
     {
@@ -33,11 +38,23 @@ public class NovelRepository : INovelRepository
             .Include(n => n.Chapters) // Nạp luôn Danh sách chương
             .FirstOrDefaultAsync(n => n.Id == id);
     }
-    
+
     public async Task<Guid> AddAsync(Novel novel)
     {
         _context.Novels.Add(novel);
         await _context.SaveChangesAsync();
         return novel.Id;
+    }
+
+    public async Task UpdateAsync(Novel novel)
+    {
+        _context.Novels.Update(novel);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(Novel novel)
+    {
+        _context.Novels.Remove(novel);
+        await _context.SaveChangesAsync();
     }
 }
