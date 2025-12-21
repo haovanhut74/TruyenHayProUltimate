@@ -12,12 +12,8 @@ public static class BffChapterEndpoints
 
         group.MapPost("/", async ([FromBody] CreateChapterDto request, HttpClient api) =>
         {
-            // Proxy: Nhận từ Client -> Gửi sang WebAPI
             var response = await api.PostAsJsonAsync("api/chapters", request);
-
-            // Trả nguyên kết quả từ WebAPI về cho Client
-            return await response.Content.ReadAsStringAsync(); 
-            // Hoặc tối ưu hơn: return Results.StatusCode((int)response.StatusCode);
+            return await response.Content.ReadAsStringAsync();
         });
     }
 }
