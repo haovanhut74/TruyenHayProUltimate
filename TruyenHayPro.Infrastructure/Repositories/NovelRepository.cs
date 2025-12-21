@@ -57,4 +57,5 @@ public class NovelRepository : INovelRepository
         _context.Novels.Remove(novel);
         await _context.SaveChangesAsync();
     }
+    
 }

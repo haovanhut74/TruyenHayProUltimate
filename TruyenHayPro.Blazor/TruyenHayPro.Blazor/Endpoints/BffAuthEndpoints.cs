@@ -34,18 +34,13 @@ public static class BffAuthEndpoints
                 context.Response.Cookies.Append("authToken", token, new CookieOptions
                 {
                     HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.Strict,
+                    Secure = true, // <--- Bắt buộc phải có khi deploy Production
+                    SameSite = SameSiteMode.Strict, // <--- Chống CSRF rất tốt
                     Expires = DateTime.UtcNow.AddDays(7)
                 });
 
                 return Results.Ok(Result<AuthResponse>.Success(
-                    new AuthResponse(
-                        result.Value.Id,
-                        result.Value.Username,
-                        result.Value.Email,
-                        ""
-                    )));
+                    result.Value with { Token = "" }));
             });
 
 

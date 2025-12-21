@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using TruyenHayPro.Application.Common.Interfaces.Repositories;
+using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Domain.Common.Entities;
 using TruyenHayPro.Shared.Wrapper;
 
@@ -9,45 +9,54 @@ namespace TruyenHayPro.Application.Features.Chapters.Create;
 public class CreateChapterCommandHandler : IRequestHandler<CreateChapterCommand, Result<Guid>>
 {
     private readonly IChapterRepository _chapterRepository;
-    private readonly IMapper _mapper;
+    private readonly INovelRepository _novelRepository;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CreateChapterCommandHandler(IChapterRepository chapterRepository, IMapper mapper)
+    // Bỏ IUnitOfWork vì chưa được định nghĩa và Repository thường đã xử lý Save
+    public CreateChapterCommandHandler(
+        IChapterRepository chapterRepository,
+        INovelRepository novelRepository,
+        ICurrentUserService currentUserService)
     {
         _chapterRepository = chapterRepository;
-        _mapper = mapper;
+        _novelRepository = novelRepository;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Result<Guid>> Handle(CreateChapterCommand command, CancellationToken cancellationToken)
     {
-        // 1. Check trùng số chương
-        var exists =
-            await _chapterRepository.IsChapterNumberExistsAsync(command.Request.NovelId, command.Request.ChapterNumber);
+        // 1. SỬA LỖI: Lấy DTO từ thuộc tính .Request của Command
+        var request = command.Request;
 
-        if (exists)
+        // 2. SỬA LỖI: Gọi đúng tên hàm GetNovelByIdAsync
+        var novel = await _novelRepository.GetNovelByIdAsync(request.NovelId);
+
+        if (novel == null)
         {
-            // SỬA 1: Bỏ 'await', đổi 'Failure' thành 'Fail' (nếu thư viện dùng chữ Fail) 
-            // hoặc giữ 'Failure' nếu đúng tên hàm, nhưng chắc chắn phải bỏ 'await'
-            return Result<Guid>.Failure($"Chương số {command.Request.ChapterNumber} đã tồn tại.");
-            // LƯU Ý: Nếu thư viện của bạn có hàm FailAsync thì giữ await. 
-            // Nếu báo lỗi "not awaitable" -> Dùng dòng dưới đây:
-            // return Result<Guid>.Fail($"Chương số {command.Request.ChapterNumber} đã tồn tại.");
+            return Result<Guid>.Failure("Truyện không tồn tại!");
         }
 
-        // 2. Map DTO -> Entity
+        // 3. Kiểm tra quyền sở hữu (Bảo mật)
+        if (novel.CreatedBy != _currentUserService.UserId)
+        {
+            return Result<Guid>.Failure("Bạn không phải là tác giả của truyện này nên không thể thêm chương!");
+        }
+
+        // 4. Tạo Entity Chapter
         var chapter = new Chapter
         {
-            NovelId = command.Request.NovelId,
-            Title = command.Request.Title,
-            Content = command.Request.Content,
-            OrderIndex = command.Request.ChapterNumber, // Đảm bảo Property này khớp với Entity
+            NovelId = request.NovelId,
+            Title = request.Title,
+            Content = request.Content,
+            OrderIndex = request.ChapterNumber,
+            WordCount = request.Content.Length
+            // CreatedBy, CreatedDate tự động xử lý
         };
 
-        // 3. Lưu vào DB
+        // 5. Lưu vào DB
+        // Giả định: ChapterRepository.AddAsync đã bao gồm SaveChangesAsync
         await _chapterRepository.AddAsync(chapter);
 
-        // SỬA 2: Bỏ 'await' và bỏ tham số string (message) vì hàm Success chỉ nhận Guid
         return Result<Guid>.Success(chapter.Id);
-        // Tương tự, nếu báo lỗi "not awaitable" hoặc sai tham số -> Dùng dòng dưới đây:
-        // return Result<Guid>.Success(chapter.Id);
     }
 }
