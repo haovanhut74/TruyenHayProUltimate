@@ -7,7 +7,7 @@ public class Chapter : BaseAuditableEntity
     public string Title { get; set; } = "Tên chương";
     public string? Content { get; set; }
     public int WordCount { get; set; } = 0;
-
+    
     //Thứ tự chương
     public int OrderIndex { get; set; }
 

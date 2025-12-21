@@ -1,0 +1,35 @@
+﻿@page "/novel/{NovelId:guid}/create-chapter"
+@using Microsoft.AspNetCore.Authorization
+@using TruyenHayPro.Blazor.Client.Services
+@inject ClientChapterService ChapterService
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<div class = "container mt-4">
+    <h3>Thêm chương mới</h3>
+
+    <EditForm Model = "@Model" OnValidSubmit = "HandleSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class = "mb-3">
+            <label>Số chương</label>
+            <InputNumber @bind-Value = "Model.ChapterNumber" class = "form-control"/>
+        </div>
+
+        <div class = "mb-3">
+            <label>Tiêu đề chương</label>
+            <InputText @bind-Value = "Model.Title" class = "form-control" placeholder = "Ví dụ: Cuộc gặp gỡ định mệnh"/>
+        </div>
+
+        <div class = "mb-3">
+            <label>Nội dung</label>
+            <InputTextArea @bind-Value = "Model.Content" class = "form-control" rows = "10"/>
+        </div>
+
+        <button type = "submit" class = "btn btn-primary" disabled = "@_isLoading">
+            @(_isLoading ? "Đang lưu..." : "Đăng chương")
+        </button>
+        <a href = "/novel-detail/@NovelId" class = "btn btn-secondary">Hủy</a>
+    </EditForm>
+</div>

@@ -56,7 +56,7 @@
                         <p class = "novel-desc">@novel.Description</p>
 
                         <div class = "action-bar-horizontal">
-                            <a href = "/create-chapter/@novel.Id" class = "btn-action primary">
+                            <a href = "/novel/@novel.Id/create-chapter" class = "btn-action primary">
                                 <i class = "bi bi-file-earmark-plus"></i> Thêm chương
                             </a>
 
@@ -67,8 +67,10 @@
                                 <a href = "/truyen/sua/@novel.Id" class = "btn-icon" title = "Sửa">
                                     <i class = "bi bi-pencil-square"></i>
                                 </a>
-                                <button class="btn btn-sm btn-outline-danger"
-                                        @onclick="() => ConfirmDelete(novel.Id)">
+                                <button
+                                    class = "btn btn-sm btn-outline-danger"
+                                    @onclick = "() => ConfirmDelete(novel.Id)"
+                                >
                                     🗑 Xoá
                                 </button>
                             </div>

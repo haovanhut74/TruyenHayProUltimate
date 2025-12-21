@@ -1,11 +1,19 @@
 ﻿@inject NavigationManager Navigation
 
 @code {
-    protected override void OnInitialized()
+    // DÙNG HÀM NÀY: Chỉ chạy sau khi giao diện đã render xong (thường là ở Client)
+    protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        // Lấy URL hiện tại
-        var returnUrl = Navigation.Uri;
-        // Chuyển hướng sang trang Login, kèm tham số returnUrl
-        Navigation.NavigateTo($"Login?returnUrl={Uri.EscapeDataString(returnUrl)}", forceLoad: true);
+        if (firstRender)
+        {
+            // Lấy URL hiện tại
+            var returnUrl = Navigation.Uri;
+
+            // Redirect dùng tham số 'returnUrl' (chữ thường) để phân biệt
+            Navigation.NavigateTo($"Login?returnUrl={Uri.EscapeDataString(returnUrl)}", forceLoad: true);
+        }
+
+        return Task.CompletedTask;
     }
+
 }

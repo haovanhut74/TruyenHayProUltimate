@@ -51,7 +51,8 @@ public static class DependencyInjection
         services.AddScoped<INovelService, NovelService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ITagService, TagService>();
-
+        services.AddScoped<IChapterRepository, ChapterRepository>();
+        
         return services;
     }
 }
