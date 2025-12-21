@@ -42,6 +42,15 @@ public class CreateChapterCommandHandler : IRequestHandler<CreateChapterCommand,
             return Result<Guid>.Failure("Bạn không phải là tác giả của truyện này nên không thể thêm chương!");
         }
 
+
+        // 5. Lưu vào DB
+
+        var isExist = await _chapterRepository.IsChapterNumberExistsAsync(request.NovelId, request.ChapterNumber);
+        if (isExist)
+        {
+            return Result<Guid>.Failure($"Chương số {request.ChapterNumber} đã tồn tại!");
+        }
+
         // 4. Tạo Entity Chapter
         var chapter = new Chapter
         {
@@ -49,14 +58,12 @@ public class CreateChapterCommandHandler : IRequestHandler<CreateChapterCommand,
             Title = request.Title,
             Content = request.Content,
             OrderIndex = request.ChapterNumber,
-            WordCount = request.Content.Length
-            // CreatedBy, CreatedDate tự động xử lý
+            WordCount = request.Content.Length,
+            CreatedDate = DateTimeOffset.UtcNow
         };
+        
+        var createdChapter = await _chapterRepository.AddAsync(chapter);
 
-        // 5. Lưu vào DB
-        // Giả định: ChapterRepository.AddAsync đã bao gồm SaveChangesAsync
-        await _chapterRepository.AddAsync(chapter);
-
-        return Result<Guid>.Success(chapter.Id);
+        return Result<Guid>.Success(createdChapter.Id);
     }
 }

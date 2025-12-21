@@ -67,10 +67,19 @@ public class AuthService : IAuthService
     // Triển khai hàm Logout
     public async Task LogoutAsync()
     {
-        // 1. Gọi BFF để xóa HttpOnly Cookie
-        await _httpClient.PostAsync("/bff/auth/logout", null);
-
-        // 2. Cập nhật lại AuthenticationState
-        ((CustomAuthStateProvider)_authStateProvider).NotifyUserLoggedOut();
+        // 1. Gọi BFF để xóa HttpOnly Cookie (Lệnh này chỉ có tác dụng thực sự khi chạy ở Client/Browser)
+        try 
+        {
+            await _httpClient.PostAsync("/bff/auth/logout", null);
+        }
+        catch 
+        {
+            // Bỏ qua lỗi kết nối nếu có, để đảm bảo code bên dưới vẫn chạy
+        }
+        
+        if (_authStateProvider is CustomAuthStateProvider customProvider)
+        {
+            customProvider.NotifyUserLoggedOut();
+        }
     }
 }
