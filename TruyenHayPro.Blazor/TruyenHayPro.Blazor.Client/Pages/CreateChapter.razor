@@ -7,6 +7,12 @@
 
 <div class = "container mt-4">
     <h3>Thêm chương mới</h3>
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <div class="alert alert-danger">
+            @errorMessage
+        </div>
+    }
 
     <EditForm Model = "@Model" OnValidSubmit = "HandleSubmit">
         <DataAnnotationsValidator/>
@@ -14,12 +20,15 @@
 
         <div class = "mb-3">
             <label>Số chương</label>
+
             <InputNumber @bind-Value = "Model.ChapterNumber" class = "form-control"/>
+            <ValidationMessage For = "@(() => Model.ChapterNumber)"/>
         </div>
 
         <div class = "mb-3">
             <label>Tiêu đề chương</label>
             <InputText @bind-Value = "Model.Title" class = "form-control" placeholder = "Ví dụ: Cuộc gặp gỡ định mệnh"/>
+            <ValidationMessage For = "@(() => Model.Title)"/>
         </div>
 
         <div class = "mb-3">

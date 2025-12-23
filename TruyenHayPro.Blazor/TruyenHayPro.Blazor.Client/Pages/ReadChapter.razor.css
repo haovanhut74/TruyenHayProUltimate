@@ -1,0 +1,331 @@
+﻿/* ==================== 1. BIẾN & THEME CỤC BỘ ==================== */
+.reader-container {
+    --reader-bg: var(--page-bg);
+    --reader-text: var(--text-main);
+    --toolbar-bg: var(--card-bg);
+    --toolbar-border: var(--card-border);
+
+    position: relative;
+    min-height: 100vh;
+    background-color: var(--reader-bg);
+    color: var(--reader-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding-bottom: 6rem;
+    /* Font family sẽ được set inline từ code C# */
+}
+
+/* --- CÁC THEME --- */
+.mode-light {
+    --reader-bg: #f8fafc;
+    --reader-text: #1e293b;
+    --toolbar-bg: rgba(255, 255, 255, 0.9);
+    --toolbar-border: rgba(0, 0, 0, 0.05);
+}
+
+.mode-sepia {
+    --reader-bg: #EAE4D3; /* Giấy cũ 1 */
+    --reader-text: #3b2a2a;
+    --toolbar-bg: rgba(234, 228, 211, 0.9);
+    --toolbar-border: rgba(93, 64, 55, 0.1);
+}
+
+.mode-sepia-2 {
+    --reader-bg: #f5e6d3; /* Giấy cũ 2 */
+    --reader-text: #5d4037;
+    --toolbar-bg: rgba(245, 230, 211, 0.9);
+    --toolbar-border: rgba(93, 64, 55, 0.1);
+}
+
+.mode-dark {
+    --reader-bg: #0f172a;
+    --reader-text: #cbd5e1;
+    --toolbar-bg: rgba(15, 23, 42, 0.85);
+    --toolbar-border: rgba(255, 255, 255, 0.1);
+}
+
+/* ==================== 2. TOOLBAR ==================== */
+.reader-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--toolbar-bg);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid var(--toolbar-border);
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    justify-content: space-between; /* Tên truyện bên trái, nút setting bên phải */
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.novel-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.back-link {
+    font-size: 0.85rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.back-link:hover {
+    opacity: 0.8;
+}
+
+.chapter-name-mini {
+    font-size: 1rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ==================== 3. NÚT & BẢNG CÀI ĐẶT (NEW) ==================== */
+/* Nút bật tắt cài đặt (Hình bánh răng) */
+.btn-toggle-settings {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--toolbar-border);
+    background: rgba(125, 125, 125, 0.1);
+    color: var(--reader-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1.2rem;
+}
+
+.btn-toggle-settings:hover, .btn-toggle-settings.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    transform: rotate(90deg);
+}
+
+/* Popup bảng cài đặt */
+.settings-panel {
+    position: absolute;
+    top: 75px;
+    right: 20px;
+    width: 300px;
+    background: var(--toolbar-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--toolbar-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    z-index: 200;
+
+    /* Animation ẩn hiện */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.settings-panel.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.setting-row {
+    margin-bottom: 1.2rem;
+}
+
+.setting-row:last-child {
+    margin-bottom: 0;
+}
+
+.setting-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--reader-text);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+}
+
+/* Nhóm nút bấm (+ -) */
+.control-group {
+    display: flex;
+    background: rgba(125, 125, 125, 0.1);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid var(--toolbar-border);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control-btn {
+    width: 36px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    color: var(--reader-text);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    background: rgba(125, 125, 125, 0.2);
+}
+
+.control-value {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+/* Các vòng tròn chọn màu */
+.theme-options {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.theme-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+
+.theme-circle:hover {
+    transform: scale(1.1);
+}
+
+.theme-circle.active {
+    border-color: var(--accent);
+    transform: scale(1.1);
+}
+
+.bg-light-btn {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+}
+
+.bg-sepia-btn {
+    background: #EAE4D3;
+    border: 1px solid #d7ccc8;
+}
+
+.bg-sepia2-btn {
+    background: #f5e6d3;
+    border: 1px solid #d7ccc8;
+}
+
+.bg-dark-btn {
+    background: #1e293b;
+    border: 1px solid #475569;
+}
+
+/* Dropdown chọn Font */
+.font-select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(125, 125, 125, 0.1);
+    border: 1px solid var(--toolbar-border);
+    color: var(--reader-text);
+    outline: none;
+    cursor: pointer;
+}
+
+.font-select option {
+    background: var(--card-bg);
+    color: var(--text-main);
+}
+
+/* ==================== 4. NỘI DUNG (CĂN TRÁI NHƯ YÊU CẦU) ==================== */
+.content-area {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0;
+    margin-left: 5%; /* Căn trái 5% */
+    padding: 2rem 1rem;
+    transition: max-width 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .content-area {
+        margin-left: 0;
+        margin: 0 auto;
+        padding: 1rem;
+    }
+}
+
+.chapter-title-big {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-align: left; /* Tiêu đề cũng nên căn trái cho đồng bộ */
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--reader-text), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: var(--reader-text);
+}
+
+.chapter-meta {
+    text-align: left; /* Meta căn trái */
+    color: var(--reader-text);
+    opacity: 0.6;
+    font-size: 0.9rem;
+    margin-bottom: 3rem;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.chapter-text {
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+/* ==================== 5. NÚT ĐIỀU HƯỚNG ==================== */
+.nav-footer {
+    max-width: 1100px; /* Khớp với content area */
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 1rem;
+}
+
+.btn-nav-big {
+    padding: 14px 20px;
+    border-radius: 12px;
+    background: rgba(125, 125, 125, 0.1);
+    color: var(--reader-text);
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+    border: 1px solid var(--toolbar-border);
+}
+
+.btn-nav-big:hover:not(.disabled) {
+    background: var(--accent);
+    color: white;
+}
+
+.btn-nav-big.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

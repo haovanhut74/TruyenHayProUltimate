@@ -8,6 +8,7 @@ public partial class CreateChapter : ComponentBase
     [Parameter] public Guid NovelId { get; set; }
     private CreateChapterDto Model = new();
     private bool _isLoading = false;
+    private string errorMessage = string.Empty;
 
     protected override void OnInitialized()
     {
@@ -20,6 +21,7 @@ public partial class CreateChapter : ComponentBase
     {
         _isLoading = true;
         var result = await ChapterService.CreateChapterAsync(Model);
+        errorMessage = string.Empty;
         _isLoading = false;
 
         if (result.IsSuccess)
@@ -30,7 +32,7 @@ public partial class CreateChapter : ComponentBase
         else
         {
             // Xử lý lỗi (Hiện Toast hoặc Alert)
-            Console.WriteLine(string.Join(",", result.Errors));
+            errorMessage = string.Join(", ", result.Errors);
         }
     }
 }

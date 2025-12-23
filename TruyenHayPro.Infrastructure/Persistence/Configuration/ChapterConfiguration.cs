@@ -19,10 +19,11 @@ public class ChapterConfiguration : IEntityTypeConfiguration<Chapter>
 
         // Nội dung truyện
         builder.Property(x => x.Content)
-            .HasMaxLength(2000)
+            .HasMaxLength(10000)
             .IsRequired();
 
         // Đánh Index cho OrderIndex để sau này sort chương cho nhanh
-        builder.HasIndex(c => c.OrderIndex);
+        builder.HasIndex(c => new { c.OrderIndex, c.NovelId })
+            .IsUnique();
     }
 }

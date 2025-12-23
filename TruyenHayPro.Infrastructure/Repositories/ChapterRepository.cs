@@ -26,4 +26,31 @@ public class ChapterRepository : IChapterRepository
         return await _context.Chapters
             .AnyAsync(c => c.NovelId == novelId && c.OrderIndex == chapterNumber);
     }
+
+    // 2. Implement trong ChapterRepository
+    public async Task<Chapter?> GetChapterDetailAsync(Guid id)
+    {
+        return await _context.Chapters
+            .Include(c => c.Novel) // Include Novel để lấy tên truyện
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<Chapter?> GetNextChapterAsync(Guid novelId, int currentOrderIndex)
+    {
+        return await _context.Chapters
+            .AsNoTracking()
+            .Where(c => c.NovelId == novelId && c.OrderIndex > currentOrderIndex)
+            .OrderBy(c => c.OrderIndex) // Lấy thằng lớn hơn gần nhất
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Chapter?> GetPreviousChapterAsync(Guid novelId, int currentOrderIndex)
+    {
+        return await _context.Chapters
+            .AsNoTracking()
+            .Where(c => c.NovelId == novelId && c.OrderIndex < currentOrderIndex)
+            .OrderByDescending(c => c.OrderIndex) // Lấy thằng nhỏ hơn gần nhất
+            .FirstOrDefaultAsync();
+    }
 }

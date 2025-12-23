@@ -16,5 +16,7 @@ public class CreateChapterValidator : AbstractValidator<CreateChapterCommand>
 
         RuleFor(x => x.Request.ChapterNumber)
             .GreaterThan(0).WithMessage("Số chương phải lớn hơn 0");
+
+
     }
 }

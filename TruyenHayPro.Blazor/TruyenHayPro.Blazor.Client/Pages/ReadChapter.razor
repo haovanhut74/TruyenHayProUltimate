@@ -1,0 +1,134 @@
+﻿@page "/chapter/{Id:guid}"
+@using TruyenHayPro.Blazor.Client.Services
+@inject ClientChapterService ChapterService
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+
+<PageTitle>@(chapter?.Title ?? "Đang tải...")</PageTitle>
+
+@if (chapter == null)
+{
+    <div class = "d-flex justify-content-center align-items-center" style = "height: 60vh;">
+        <div class = "spinner-border text-primary" role = "status"></div>
+    </div>
+}
+else
+{
+    <div
+        class = "reader-container @currentMode"
+        style = "font-family: @currentFont; line-height: @currentLineHeight;"
+    >
+
+        <header class = "reader-toolbar">
+            <div class = "novel-info">
+                <a href = "/novel/@chapter.NovelId" class = "back-link">
+                    <i class = "bi bi-chevron-left"></i> @chapter.NovelTitle
+                </a>
+                <span class = "chapter-name-mini">@chapter.Title</span>
+            </div>
+
+            <button
+                class = "btn-toggle-settings @(showSettings ? "active" : "")"
+                @onclick = "ToggleSettings" title = "Cài đặt hiển thị"
+            >
+                <i class = "bi bi-gear-fill"></i>
+            </button>
+
+            <div class = "settings-panel @(showSettings ? "show" : "")">
+
+                <div class = "setting-row">
+                    <label class = "setting-label">Màu nền</label>
+                    <div class = "theme-options">
+                        <button
+                            class = "theme-circle bg-light-btn @(currentMode == "mode-light" ? "active" : "")"
+                            @onclick = '() => SetMode("mode-light")'
+                        ></button>
+                        <button
+                            class = "theme-circle bg-sepia-btn @(currentMode == "mode-sepia" ? "active" : "")"
+                            @onclick = '() => SetMode("mode-sepia")'
+                        ></button>
+                        <button
+                            class = "theme-circle bg-sepia2-btn @(currentMode == "mode-sepia-2" ? "active" : "")"
+                            @onclick = '() => SetMode("mode-sepia-2")'
+                        ></button>
+                        <button
+                            class = "theme-circle bg-dark-btn @(currentMode == "mode-dark" ? "active" : "")"
+                            @onclick = '() => SetMode("mode-dark")'
+                        ></button>
+                    </div>
+                </div>
+
+                <div class = "setting-row">
+                    <label class = "setting-label">Font chữ</label>
+                    <select class = "font-select" @bind = "currentFont">
+                        <option value = "'Segoe UI', sans-serif">Segoe UI (Mặc định)</option>
+                        <option value = "'Times New Roman', serif">Times New Roman</option>
+                        <option value = "'Merriweather', serif">Merriweather (Sách báo)</option>
+                        <option value = "'Roboto', sans-serif">Roboto</option>
+                        <option value = "'Palatino Linotype', serif">Palatino Linotype</option>
+                    </select>
+                </div>
+
+                <div class = "setting-row">
+                    <label class = "setting-label">Cỡ chữ</label>
+                    <div class = "control-group">
+                        <button class = "control-btn" @onclick = "DecreaseFont"><i class = "bi bi-dash-lg"></i></button>
+                        <span class = "control-value">@fontSize px</span>
+                        <button class = "control-btn" @onclick = "IncreaseFont"><i class = "bi bi-plus-lg"></i></button>
+                    </div>
+                </div>
+
+                <div class = "setting-row">
+                    <label class = "setting-label">Giãn dòng</label>
+                    <div class = "control-group">
+                        <button class = "control-btn" @onclick = "DecreaseLineHeight">
+                            <i class = "bi bi-text-center"></i></button>
+                        <span class = "control-value">@currentLineHeight</span>
+                        <button class = "control-btn" @onclick = "IncreaseLineHeight">
+                            <i class = "bi bi-text-paragraph"></i></button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        @if (showSettings)
+        {
+            <div style = "position: fixed; inset: 0; z-index: 999;" @onclick = "ToggleSettings"></div>
+        }
+
+        <main class = "content-area">
+            <h1 class = "chapter-title-big">@chapter.Title</h1>
+
+            <div class = "chapter-meta">
+                <span><i class = "bi bi-book"></i> @chapter.OrderIndex</span>
+                <span><i class = "bi bi-calendar3"></i> @chapter.CreatedDate.ToString("dd/MM/yyyy")</span>
+                <span><i class = "bi bi-fonts"></i> @chapter.Content.Length chữ</span>
+            </div>
+
+            <div class = "chapter-text" style = "font-size: @(fontSize)px;">
+                @((MarkupString)FormatContent(chapter.Content))
+            </div>
+
+            <div class = "nav-footer">
+                <a
+                    href = "@GetLink(chapter.PreviousChapterId)"
+                    class = "btn-nav-big @(chapter.PreviousChapterId == null ? "disabled" : "")"
+                >
+                    <i class = "bi bi-arrow-left"></i> Trước
+                </a>
+
+                <a href = "/novel/@chapter.NovelId" class = "btn-nav-big" title = "Mục lục">
+                    <i class = "bi bi-list-ul"></i>
+                </a>
+
+                <a
+                    href = "@GetLink(chapter.NextChapterId)"
+                    class = "btn-nav-big @(chapter.NextChapterId == null ? "disabled" : "")"
+                >
+                    Sau <i class = "bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </main>
+
+    </div>
+}
