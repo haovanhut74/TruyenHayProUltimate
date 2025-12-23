@@ -18,7 +18,10 @@ public partial class ReadChapter : ComponentBase
     private double currentLineHeight = 1.8;
 
     private bool _shouldScrollToTop;
-
+    private string LineHeightCSS => currentLineHeight.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture);
+    private int WordCount => string.IsNullOrWhiteSpace(chapter?.Content) 
+        ? 0 
+        : chapter.Content.Split([' ', '\n', '\r', '\t'], StringSplitOptions.RemoveEmptyEntries).Length;
     protected override async Task OnParametersSetAsync()
     {
         chapter = null;

@@ -46,11 +46,10 @@
 /* ==================== 2. TOOLBAR ==================== */
 .reader-toolbar {
     position: sticky;
-    top: 0;
+    top: -32px;
     z-index: 1000;
     background: var(--toolbar-bg);
     backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border-bottom: 1px solid var(--toolbar-border);
     padding: 0.8rem 1.5rem;
     display: flex;

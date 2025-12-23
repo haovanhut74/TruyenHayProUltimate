@@ -99,14 +99,23 @@ else
         <main class = "content-area">
             <h1 class = "chapter-title-big">@chapter.Title</h1>
 
-            <div class = "chapter-meta">
-                <span><i class = "bi bi-book"></i> @chapter.OrderIndex</span>
-                <span><i class = "bi bi-calendar3"></i> @chapter.CreatedDate.ToString("dd/MM/yyyy")</span>
-                <span><i class = "bi bi-fonts"></i> @chapter.Content.Length chữ</span>
+            <div class="chapter-meta">
+                <span><i class="bi bi-book"></i> @chapter.OrderIndex</span>
+    
+                <span><i class="bi bi-calendar3"></i> @chapter.CreatedDate.ToString("dd/MM/yyyy")</span>
+    
+                <span>
+                    <i class="bi bi-pen"></i> @WordCount.ToString("N0") chữ
+                </span>
             </div>
 
-            <div class = "chapter-text" style = "font-size: @(fontSize)px;">
+            <div
+                class = "chapter-text"
+                style = "font-size: @(fontSize)px; line-height: @LineHeightCSS;"
+            >
+
                 @((MarkupString)FormatContent(chapter.Content))
+
             </div>
 
             <div class = "nav-footer">
