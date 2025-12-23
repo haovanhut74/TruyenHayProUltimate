@@ -1,0 +1,70 @@
+﻿@page "/edit-chapter/{Id:guid}"
+@using Microsoft.AspNetCore.Authorization
+@using TruyenHayPro.Blazor.Client.Services
+@attribute [Authorize]
+
+@inject ClientChapterService ChapterService
+@inject NavigationManager Navigation
+
+<div class="create-container">
+    <div class="create-card">
+        <div class="card-header">
+            <h3>
+                <i class="bi bi-pencil-square"></i>
+                Sửa Chương
+            </h3>
+        </div>
+
+        @if (isLoading)
+        {
+            <div class="loading">Đang tải chương...</div>
+        }
+        else
+        {
+            <EditForm Model="@model" OnValidSubmit="HandleSubmit">
+                <DataAnnotationsValidator />
+
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="alert-error">@errorMessage</div>
+                }
+
+                <div class="form-body">
+                    <div class="row-group">
+                        <div class="form-group">
+                            <label class="form-label">Số chương</label>
+                            <InputNumber @bind-Value="model.ChapterNumber"
+                                         class="form-input" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tiêu đề</label>
+                            <InputText @bind-Value="model.Title"
+                                       class="form-input" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Nội dung</label>
+                        <InputTextArea @bind-Value="model.Content"
+                                       class="form-input form-textarea" />
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="button"
+                                class="btn-cancel"
+                                @onclick="GoBack">
+                            Hủy
+                        </button>
+
+                        <button type="submit"
+                                class="btn-submit"
+                                disabled="@isSubmitting">
+                            @(isSubmitting ? "Đang lưu..." : "Lưu thay đổi")
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+    </div>
+</div>

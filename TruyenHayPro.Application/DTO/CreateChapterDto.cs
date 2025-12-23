@@ -7,7 +7,7 @@ public class CreateChapterDto
     public Guid NovelId { get; set; }
 
     [Required(ErrorMessage = "Vui lòng nhập tiêu đề chương")]
-    [MaxLength(200, ErrorMessage = "Tiêu đề không được quá 200 ký tự")]
+    [MaxLength(500, ErrorMessage = "Tiêu đề không được quá 200 ký tự")]
     public string Title { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Nội dung chương không được để trống")]

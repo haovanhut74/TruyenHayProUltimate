@@ -53,4 +53,18 @@ public class ChapterRepository : IChapterRepository
             .OrderByDescending(c => c.OrderIndex) // Lấy thằng nhỏ hơn gần nhất
             .FirstOrDefaultAsync();
     }
+
+    // Implement chi tiết
+    public async Task<Chapter?> GetChapterWithNovelAsync(Guid id)
+    {
+        return await _context.Chapters
+            .Include(c => c.Novel) // Quan trọng: Include để check quyền sở hữu
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task UpdateAsync(Chapter chapter)
+    {
+        _context.Chapters.Update(chapter);
+        await _context.SaveChangesAsync();
+    }
 }

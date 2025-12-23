@@ -16,7 +16,7 @@ public partial class ReadChapter : ComponentBase
     private string currentFont = "'Segoe UI', sans-serif"; // Mặc định
     private int fontSize = 20;
     private double currentLineHeight = 1.8;
-
+    private string? errorMessage;
     private bool _shouldScrollToTop;
 
     private string LineHeightCSS =>
@@ -28,8 +28,24 @@ public partial class ReadChapter : ComponentBase
 
     protected override async Task OnParametersSetAsync()
     {
+        // 1. Reset trạng thái
         chapter = null;
-        chapter = await ChapterService.GetChapterDetailAsync(Id);
+        errorMessage = null;
+
+        // 2. Gọi Service (lúc này trả về Result<T>)
+        var result = await ChapterService.GetChapterDetailAsync(Id);
+
+        // 3. Kiểm tra kết quả từ Wrapper
+        if (result.IsSuccess)
+        {
+            chapter = result.Value; // Lấy dữ liệu thật từ .Value
+        }
+        else
+        {
+            // Lấy thông báo lỗi để hiển thị (nếu cần)
+            errorMessage = string.Join(", ", result.Errors);
+        }
+
         _shouldScrollToTop = true;
     }
 

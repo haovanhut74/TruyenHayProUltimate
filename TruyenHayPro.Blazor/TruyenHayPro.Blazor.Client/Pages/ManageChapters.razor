@@ -1,0 +1,54 @@
+﻿@page "/manage-chapters/{NovelId:guid}"
+@using Microsoft.AspNetCore.Authorization
+@using TruyenHayPro.Application.Common.Interfaces.Services
+@inject INovelService NovelService
+@inject NavigationManager Navigation
+@attribute [Authorize]
+
+<div class = "container mt-4">
+    <h3>Quản lý chương</h3>
+
+
+    @if (novel == null)
+    {
+        <p>Đang tải...</p>
+    }
+    else
+    {
+        <div class = "mb-3">
+            <a href = "/truyen-cua-toi" class = "btn btn-outline-secondary">⬅ Quay lại danh sách truyện</a>
+            <a href = "/novel/@NovelId/create-chapter" class = "btn btn-primary ms-2">+ Thêm chương mới</a>
+        </div>
+
+        <table class = "table table-hover">
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên chương</th>
+                <th>Ngày tạo</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var chapter in novel.Chapters.OrderBy(c => c.OrderIndex))
+            {
+                <tr>
+                    <td>@chapter.OrderIndex</td>
+                    <td>@chapter.Title</td>
+                    <td>@chapter.CreatedDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a href = "/edit-chapter/@chapter.Id" class = "btn btn-sm btn-warning">
+                            <i class = "bi bi-pencil"></i> Sửa
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+
+
+}

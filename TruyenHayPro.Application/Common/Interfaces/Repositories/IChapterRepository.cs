@@ -11,4 +11,7 @@ public interface IChapterRepository
     Task<Chapter?> GetChapterDetailAsync(Guid id);
     Task<Chapter?> GetNextChapterAsync(Guid novelId, int currentOrderIndex);
     Task<Chapter?> GetPreviousChapterAsync(Guid novelId, int currentOrderIndex);
+
+    Task<Chapter?> GetChapterWithNovelAsync(Guid id);
+    Task UpdateAsync(Chapter chapter);
 }

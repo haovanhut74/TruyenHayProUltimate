@@ -165,7 +165,7 @@
 
 /* TextArea đặc biệt */
 .form-textarea {
-    min-height: 120px;
+    min-height: 800px;
     resize: vertical;
     line-height: 1.5;
 }

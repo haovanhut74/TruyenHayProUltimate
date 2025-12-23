@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TruyenHayPro.Application.Common.Interfaces.Repositories;
 using TruyenHayPro.Application.DTO;
 using TruyenHayPro.Application.Features.Chapters.Create;
+using TruyenHayPro.Application.Features.Chapters.Update;
 
 namespace TruyenHayPro.WebAPI.Endpoints;
 
@@ -21,10 +22,15 @@ public static class ChapterEndpoints
         });
         // Thêm vào MapChapterEndpoints
         group.MapGet("/{id:guid}", GetChapterDetail);
+        group.MapPut("/", async (ISender sender, [FromBody] UpdateChapterDto dto) =>
+        {
+            var result = await sender.Send(new UpdateChapterCommand(dto));
+            return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+        }).RequireAuthorization();
     }
 
 
-// Handler xử lý
+    // Handler xử lý
     private static async Task<IResult> GetChapterDetail(
         Guid id,
         IChapterRepository chapterRepo)

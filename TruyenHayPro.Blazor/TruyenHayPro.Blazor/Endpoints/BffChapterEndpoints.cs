@@ -44,5 +44,22 @@ public static class BffChapterEndpoints
             var content = await response.Content.ReadAsStringAsync();
             return Results.Content(content, "application/json");
         });
+
+        // Thêm Endpoint chuyển tiếp request từ Client -> WebAPI
+        group.MapPut("", async (UpdateChapterDto request, IHttpClientFactory factory, HttpContext context) =>
+        {
+            // Lấy token từ Cookie HttpOnly (Bảo mật bước 14)
+            var token = context.Request.Cookies["authToken"];
+            if (string.IsNullOrWhiteSpace(token)) return Results.Unauthorized();
+
+            var client = factory.CreateClient("WebAPI");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await client.PutAsJsonAsync("api/chapters", request);
+
+            // Đọc kết quả và trả về cho Client
+            var content = await response.Content.ReadAsStringAsync();
+            return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
+        });
     }
 }

@@ -61,17 +61,14 @@
                             </a>
 
                             <div class = "sub-actions">
-                                <a href = "/novel/@novel.Id" class = "btn-icon" title = "Xem">
-                                    <i class = "bi bi-eye"></i>
+                                <a href = "/manage-chapters/@novel.Id" class = "btn-icon" title = "Quản lý chương">
+                                    <i class = "bi bi-list-ol"></i>
                                 </a>
-                                <a href = "/truyen/sua/@novel.Id" class = "btn-icon" title = "Sửa">
-                                    <i class = "bi bi-pencil-square"></i>
-                                </a>
-                                <button
-                                    class = "btn btn-sm btn-outline-danger"
-                                    @onclick = "() => ConfirmDelete(novel.Id)"
-                                >
-                                    🗑 Xoá
+
+                                <a href = "/novel/@novel.Id" class = "btn-icon" title = "Xem"><i class = "bi bi-eye"></i></a>
+                                <a href = "/truyen/sua/@novel.Id" class = "btn-icon" title = "Sửa"><i class = "bi bi-pencil-square"></i></a>
+                                <button class = "btn btn-sm btn-outline-danger" @onclick = "() => ConfirmDelete(novel.Id)">
+                                    🗑
                                 </button>
                             </div>
                         </div>

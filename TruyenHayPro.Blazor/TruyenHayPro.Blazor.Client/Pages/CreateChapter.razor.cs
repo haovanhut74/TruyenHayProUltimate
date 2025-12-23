@@ -27,7 +27,7 @@ public partial class CreateChapter : ComponentBase
         if (result.IsSuccess)
         {
             // Thành công -> Quay về trang chi tiết truyện
-            Navigation.NavigateTo($"/novel-detail/{NovelId}");
+            Navigation.NavigateTo($"/manage-chapters");
         }
         else
         {
