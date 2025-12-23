@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TruyenHayPro.Application.Common.Interfaces.Repositories;
 using TruyenHayPro.Application.DTO;
 using TruyenHayPro.Application.Features.Chapters.Create;
+using TruyenHayPro.Application.Features.Chapters.Delete;
 using TruyenHayPro.Application.Features.Chapters.Update;
 
 namespace TruyenHayPro.WebAPI.Endpoints;
@@ -27,6 +28,14 @@ public static class ChapterEndpoints
             var result = await sender.Send(new UpdateChapterCommand(dto));
             return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
         }).RequireAuthorization();
+        // THÊM ENDPOINT DELETE:
+        group.MapDelete("/{id:guid}", async (Guid id, ISender mediator) =>
+            {
+                var result = await mediator.Send(new DeleteChapterCommand(id));
+
+                return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
+            })
+            .RequireAuthorization(); // Bắt buộc đăng nhập
     }
 
 

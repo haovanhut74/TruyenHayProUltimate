@@ -102,7 +102,7 @@ else
                                     @foreach (var chap in novel.Chapters.OrderBy(c => c.OrderIndex))
                                     {
                                         <a href = "/chapter/@chap.Id" class = "chapter-item">
-                                            <span class = "chap-num">Chương @chap.OrderIndex</span>
+                                            <span class = "chap-num">@chap.OrderIndex</span>
                                             <span class = "chap-title">@chap.Title</span>
                                             <span class = "chap-date">@chap.CreatedDate.ToString("dd/MM")</span>
                                         </a>

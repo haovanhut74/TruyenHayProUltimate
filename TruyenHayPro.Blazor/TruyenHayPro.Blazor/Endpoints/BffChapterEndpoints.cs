@@ -61,5 +61,17 @@ public static class BffChapterEndpoints
             var content = await response.Content.ReadAsStringAsync();
             return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
         });
+        // Nhận request từ Blazor Client -> Chuyển tiếp sang WebAPI thật
+        group.MapDelete("/{id:guid}", async (Guid id, IHttpClientFactory httpClientFactory) =>
+            {
+                var client = httpClientFactory.CreateClient("WebAPI"); // Đã cấu hình BaseAddress & Token
+
+                var response = await client.DeleteAsync($"/api/chapters/{id}");
+
+                // Đọc response từ API và trả nguyên vẹn về cho Client
+                var content = await response.Content.ReadAsStringAsync();
+                return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
+            })
+            .RequireAuthorization();
     }
 }

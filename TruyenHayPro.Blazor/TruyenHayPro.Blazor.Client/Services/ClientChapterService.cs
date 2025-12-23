@@ -35,14 +35,15 @@ public class ClientChapterService
         try
         {
             var response = await _httpClient.GetAsync($"bff/chapters/{id}");
-            
+
             if (response.IsSuccessStatusCode)
             {
                 var dto = await response.Content.ReadFromJsonAsync<ChapterDetailDto>();
-                return dto != null 
-                    ? Result<ChapterDetailDto>.Success(dto) 
+                return dto != null
+                    ? Result<ChapterDetailDto>.Success(dto)
                     : Result<ChapterDetailDto>.Failure("Dữ liệu trả về rỗng.");
             }
+
             return Result<ChapterDetailDto>.Failure("Không tìm thấy chương.");
         }
         catch
@@ -64,5 +65,25 @@ public class ClientChapterService
         {
             return Result<T>.Failure($"Lỗi kết nối ({response.StatusCode}).");
         }
+    }
+
+    // 4. THÊM hàm lấy danh sách chương (cho trang ManageChapters)
+    public async Task<Result<List<ChapterDto>>> GetChaptersByNovelIdAsync(Guid novelId)
+    {
+        // Gọi endpoint BFF (lưu ý đường dẫn phải khớp với BffChapterEndpoints)
+        var response = await _httpClient.GetAsync($"bff/chapters/novel/{novelId}");
+
+        // Tái sử dụng hàm DeserializeResultAsync đã có
+        return await DeserializeResultAsync<List<ChapterDto>>(response);
+    }
+
+    // 5. SỬA LẠI hàm DeleteChapterAsync (đang bị lỗi)
+    // Đổi IResult<Guid> thành Result<Guid>
+    public async Task<Result<Guid>> DeleteChapterAsync(Guid chapterId)
+    {
+        var response = await _httpClient.DeleteAsync($"bff/chapters/{chapterId}");
+
+        // Dùng DeserializeResultAsync thay vì ToResult
+        return await DeserializeResultAsync<Guid>(response);
     }
 }
