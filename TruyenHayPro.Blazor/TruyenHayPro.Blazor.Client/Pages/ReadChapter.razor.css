@@ -272,7 +272,7 @@
 .chapter-title-big {
     font-size: 2.2rem;
     font-weight: 800;
-    text-align: left; /* Tiêu đề cũng nên căn trái cho đồng bộ */
+    text-align: center; /* Tiêu đề cũng nên căn trái cho đồng bộ */
     margin-bottom: 0.5rem;
     background: linear-gradient(135deg, var(--reader-text), var(--accent));
     -webkit-background-clip: text;
@@ -281,12 +281,12 @@
 }
 
 .chapter-meta {
-    text-align: left; /* Meta căn trái */
+    text-align: center; /* Meta căn trái */
     color: var(--reader-text);
     opacity: 0.6;
     font-size: 0.9rem;
     margin-bottom: 3rem;
-    display: flex;
+
     gap: 1.5rem;
 }
 

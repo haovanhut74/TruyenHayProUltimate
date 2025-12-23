@@ -58,14 +58,15 @@ else
                     </div>
                 </div>
 
-                <div class = "setting-row">
-                    <label class = "setting-label">Font chữ</label>
-                    <select class = "font-select" @bind = "currentFont">
-                        <option value = "'Segoe UI', sans-serif">Segoe UI (Mặc định)</option>
-                        <option value = "'Times New Roman', serif">Times New Roman</option>
-                        <option value = "'Merriweather', serif">Merriweather (Sách báo)</option>
-                        <option value = "'Roboto', sans-serif">Roboto</option>
-                        <option value = "'Palatino Linotype', serif">Palatino Linotype</option>
+                <div class="setting-row">
+                    <label class="setting-label">Font chữ</label>
+    
+                    <select class="font-select" value="@currentFont" @onchange="OnFontChange">
+                        <option value="'Segoe UI', sans-serif">Segoe UI (Mặc định)</option>
+                        <option value="'Times New Roman', serif">Times New Roman</option>
+                        <option value="'Merriweather', serif">Merriweather (Sách báo)</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Palatino Linotype', serif">Palatino Linotype</option>
                     </select>
                 </div>
 
@@ -99,13 +100,13 @@ else
         <main class = "content-area">
             <h1 class = "chapter-title-big">@chapter.Title</h1>
 
-            <div class="chapter-meta">
-                <span><i class="bi bi-book"></i> @chapter.OrderIndex</span>
-    
-                <span><i class="bi bi-calendar3"></i> @chapter.CreatedDate.ToString("dd/MM/yyyy")</span>
-    
+            <div class = "chapter-meta">
+                <span><i class = "bi bi-book"></i> @chapter.OrderIndex</span>
+
+                <span><i class = "bi bi-calendar3"></i> @chapter.CreatedDate.ToString("dd/MM/yyyy")</span>
+
                 <span>
-                    <i class="bi bi-pen"></i> @WordCount.ToString("N0") chữ
+                    <i class = "bi bi-pen"></i> @WordCount.ToString("N0") chữ
                 </span>
             </div>
 
