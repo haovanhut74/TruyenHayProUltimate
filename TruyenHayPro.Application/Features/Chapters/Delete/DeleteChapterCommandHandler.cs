@@ -22,7 +22,7 @@ public class DeleteChapterCommandHandler : IRequestHandler<DeleteChapterCommand,
     {
         // 1. Sửa GetByIdAsync -> GetChapterDetailAsync
         var chapter = await _chapterRepository.GetChapterDetailAsync(request.Id);
-        
+
         if (chapter == null)
         {
             // 2. Sửa FailAsync -> Failure và bỏ await
@@ -31,7 +31,7 @@ public class DeleteChapterCommandHandler : IRequestHandler<DeleteChapterCommand,
 
         // 3. Kiểm tra quyền sở hữu
         var userId = _currentUserService.UserId;
-        if (chapter.CreatedBy != userId) 
+        if (chapter.Novel.CreatedBy != userId)
         {
             return Result<Guid>.Failure("Bạn không có quyền xóa chương này.");
         }

@@ -59,9 +59,10 @@ public class CreateChapterCommandHandler : IRequestHandler<CreateChapterCommand,
             Content = request.Content,
             OrderIndex = request.ChapterNumber,
             WordCount = request.Content.Length,
-            CreatedDate = DateTimeOffset.UtcNow
+            CreatedDate = DateTimeOffset.UtcNow,
+            CreatedBy = _currentUserService.UserId
         };
-        
+
         var createdChapter = await _chapterRepository.AddAsync(chapter);
 
         return Result<Guid>.Success(createdChapter.Id);
