@@ -1,4 +1,5 @@
-﻿using TruyenHayPro.Domain.Common.Entities;
+﻿using TruyenHayPro.Application.DTO;
+using TruyenHayPro.Domain.Common.Entities;
 
 namespace TruyenHayPro.Application.Common.Interfaces.Repositories;
 
@@ -13,7 +14,7 @@ public interface IChapterRepository
     Task<Chapter?> GetPreviousChapterAsync(Guid novelId, int currentOrderIndex);
 
     Task<Chapter?> GetChapterWithNovelAsync(Guid id);
-    
+    Task<List<ChapterDto>> GetListByNovelIdAsync(Guid novelId);
     Task UpdateAsync(Chapter chapter);
     Task DeleteAsync(Chapter chapter);
 }

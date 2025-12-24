@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TruyenHayPro.Application.Common.Interfaces.Repositories;
+using TruyenHayPro.Application.DTO;
 using TruyenHayPro.Domain.Common.Entities;
 using TruyenHayPro.Infrastructure.Persistence;
 
@@ -72,5 +73,22 @@ public class ChapterRepository : IChapterRepository
     {
         _context.Chapters.Remove(chapter);
         await _context.SaveChangesAsync();
+    }
+    public async Task<List<ChapterDto>> GetListByNovelIdAsync(Guid novelId)
+    {
+        // Lấy danh sách chương của truyện, sắp xếp theo thứ tự (OrderIndex)
+        var query = _context.Chapters
+            .AsNoTracking()
+            .Where(x => x.NovelId == novelId)
+            .OrderBy(x => x.OrderIndex)
+            .Select(x => new ChapterDto
+            {
+                Id = x.Id,
+                Title = x.Title,
+                OrderIndex = x.OrderIndex,
+                CreatedDate = x.CreatedDate
+            });
+
+        return await query.ToListAsync();
     }
 }

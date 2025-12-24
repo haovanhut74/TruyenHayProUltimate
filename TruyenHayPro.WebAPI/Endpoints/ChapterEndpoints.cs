@@ -4,6 +4,7 @@ using TruyenHayPro.Application.Common.Interfaces.Repositories;
 using TruyenHayPro.Application.DTO;
 using TruyenHayPro.Application.Features.Chapters.Create;
 using TruyenHayPro.Application.Features.Chapters.Delete;
+using TruyenHayPro.Application.Features.Chapters.Queries.GetByNovel;
 using TruyenHayPro.Application.Features.Chapters.Update;
 
 namespace TruyenHayPro.WebAPI.Endpoints;
@@ -28,6 +29,13 @@ public static class ChapterEndpoints
             var result = await sender.Send(new UpdateChapterCommand(dto));
             return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
         }).RequireAuthorization();
+        
+        group.MapGet("/novel/{novelId:guid}", async (Guid novelId, ISender mediator) =>
+        {
+            var result = await mediator.Send(new GetChaptersByNovelQuery(novelId));
+            return Results.Ok(result);
+        });
+        
         // THÊM ENDPOINT DELETE:
         group.MapDelete("/{id:guid}", async (Guid id, ISender mediator) =>
             {

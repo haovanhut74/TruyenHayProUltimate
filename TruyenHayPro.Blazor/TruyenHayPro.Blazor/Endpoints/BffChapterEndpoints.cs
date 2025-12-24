@@ -9,6 +9,7 @@ public static class BffChapterEndpoints
     {
         var group = app.MapGroup("/bff/chapters");
 
+        // 1. Create
         group.MapPost("", async (
             CreateChapterDto request,
             IHttpClientFactory factory,
@@ -25,30 +26,36 @@ public static class BffChapterEndpoints
             var response = await client.PostAsJsonAsync("api/chapters", request);
             var json = await response.Content.ReadAsStringAsync();
 
-            // ⭐ LUÔN TRẢ BODY
-            return Results.Content(
-                json,
-                "application/json",
-                statusCode: (int)response.StatusCode
-            );
+            return Results.Content(json, "application/json", statusCode: (int)response.StatusCode);
         });
 
-        // Thêm vào group
+        // 2. Get Detail (Lấy 1 chương)
         group.MapGet("/{id:guid}", async (Guid id, IHttpClientFactory factory) =>
         {
             var client = factory.CreateClient("WebAPI");
             var response = await client.GetAsync($"/api/chapters/{id}");
 
-            if (!response.IsSuccessStatusCode) return Results.StatusCode((int)response.StatusCode);
-
             var content = await response.Content.ReadAsStringAsync();
-            return Results.Content(content, "application/json");
+            return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
         });
 
-        // Thêm Endpoint chuyển tiếp request từ Client -> WebAPI
+        // =======================================================
+        // 👇👇👇 THÊM ĐOẠN NÀY ĐỂ FIX LỖI 404 👇👇👇
+        // 3. Get List by Novel (Lấy danh sách chương theo truyện)
+        group.MapGet("/novel/{novelId:guid}", async (Guid novelId, IHttpClientFactory factory) =>
+        {
+            var client = factory.CreateClient("WebAPI");
+            // Gọi sang API Backend (phải đảm bảo bên WebAPI có endpoint này)
+            var response = await client.GetAsync($"/api/chapters/novel/{novelId}");
+
+            var content = await response.Content.ReadAsStringAsync();
+            return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
+        });
+        // =======================================================
+
+        // 4. Update
         group.MapPut("", async (UpdateChapterDto request, IHttpClientFactory factory, HttpContext context) =>
         {
-            // Lấy token từ Cookie HttpOnly (Bảo mật bước 14)
             var token = context.Request.Cookies["authToken"];
             if (string.IsNullOrWhiteSpace(token)) return Results.Unauthorized();
 
@@ -57,18 +64,24 @@ public static class BffChapterEndpoints
 
             var response = await client.PutAsJsonAsync("api/chapters", request);
 
-            // Đọc kết quả và trả về cho Client
             var content = await response.Content.ReadAsStringAsync();
             return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
         });
-        // Nhận request từ Blazor Client -> Chuyển tiếp sang WebAPI thật
-        group.MapDelete("/{id:guid}", async (Guid id, IHttpClientFactory httpClientFactory) =>
+
+        // 5. Delete
+        group.MapDelete("/{id:guid}", async (Guid id, IHttpClientFactory httpClientFactory, HttpContext context) =>
             {
-                var client = httpClientFactory.CreateClient("WebAPI"); // Đã cấu hình BaseAddress & Token
+                // Lấy token để truyền sang API (phòng trường hợp API yêu cầu quyền)
+                var token = context.Request.Cookies["authToken"];
+                var client = httpClientFactory.CreateClient("WebAPI");
+
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                }
 
                 var response = await client.DeleteAsync($"/api/chapters/{id}");
 
-                // Đọc response từ API và trả nguyên vẹn về cho Client
                 var content = await response.Content.ReadAsStringAsync();
                 return Results.Content(content, "application/json", statusCode: (int)response.StatusCode);
             })
