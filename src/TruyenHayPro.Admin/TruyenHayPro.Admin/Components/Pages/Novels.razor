@@ -1,14 +1,11 @@
 ﻿@page "/novels"
-@using TruyenHayPro.Domain.Common.Entities
-@using TruyenHayPro.Application.Common.Admin.Interfaces.Repository
-@using Microsoft.AspNetCore.Authorization
-@using TruyenHayPro.Domain.Enums
+@using TruyenHayPro.Application.Common.Admin.Interfaces.Services
 
 @* Chặn người lạ, chỉ Admin mới được vào *@
 @attribute [Authorize]
 
 @* Gọi Repository để lấy dữ liệu trực tiếp *@
-@inject INovelRepository NovelRepository
+@inject IAdminNovelService AdminNovelService
 @inject NavigationManager Navigation
 
 <div class = "d-flex justify-content-between align-items-center mb-4">
@@ -68,18 +65,16 @@ else
                         <td>@novel.Author</td>
                         <td>
                             @* Hiển thị trạng thái bằng Badge màu *@
-                            @switch (novel.Status)
+                            @switch (novel.StatusName)
                             {
-                                case NovelStatus.Completed:
+                                case "Completed":
                                     <span class = "badge bg-success">Đã hoàn thành</span>
                                     break;
-                                case NovelStatus.OnGoing:
+                                case "OnGoing":
                                     <span class = "badge bg-primary">Đang ra</span>
                                     break;
-                                case NovelStatus.Paused:
+                                case "Paused":
                                     <span class = "badge bg-secondary">Tạm ngưng</span>
-                                    break;
-                                case NovelStatus.Droped:
                                     break;
                                 default:
                                     <span class = "badge bg-secondary">Ngừng ra</span>
@@ -104,21 +99,6 @@ else
 }
 
 @code {
-    private List<Novel>? _novels;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Load danh sách truyện khi vào trang
-        // Lưu ý: Hàm GetAllAsync() trả về IQueryable hoặc List tùy vào Repository của bạn
-        // Nếu Repository chưa có hàm này, chúng ta sẽ thêm ở Bước 2
-        var result = await NovelRepository.GetAllAsync();
-        _novels = result.OrderByDescending(n => n.CreatedDate).ToList();
-    }
-
-    private async Task DeleteNovel(Guid id, string title)
-    {
-        // Tạm thời để hàm trống, mình sẽ làm chức năng Xóa có confirm ở bước sau
-        Console.WriteLine($"Muốn xóa truyện: {title}");
-    }
 
 }

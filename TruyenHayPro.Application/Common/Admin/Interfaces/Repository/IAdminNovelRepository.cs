@@ -2,7 +2,7 @@
 
 namespace TruyenHayPro.Application.Common.Admin.Interfaces.Repository;
 
-public interface INovelRepository
+public interface IAdminNovelRepository
 {
     Task<List<Novel>> GetAllAsync();
     

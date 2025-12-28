@@ -1,4 +1,5 @@
-﻿using TruyenHayPro.Application.Common.Interfaces.Services;
+﻿using Microsoft.AspNetCore.Mvc;
+using TruyenHayPro.Application.Common.Interfaces.Services;
 using TruyenHayPro.Application.DTO;
 
 namespace TruyenHayPro.WebAPI.Endpoints;
@@ -13,7 +14,7 @@ public static class TagEndpoints
         group.MapPost("/", CreateTag);
     }
 
-    static async Task<IResult> CreateTag(CreateTagDto dto, ITagService service)
+    static async Task<IResult> CreateTag(CreateTagDto dto, [FromServices] ITagService service)
     {
         var id = await service.CreateTagAsync(dto);
         return Results.Ok(id);

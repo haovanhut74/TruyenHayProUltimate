@@ -19,13 +19,13 @@ public static class NovelsEndpoints
         group.MapPost("/", CreateNovel)
             .RequireAuthorization();
 
-        group.MapGet("/my", async (INovelService novelService) =>
+        group.MapGet("/my", async ([FromServices] INovelService novelService) =>
             {
                 var novels = await novelService.GetMyNovelsAsync();
                 return Results.Ok(novels);
             })
             .RequireAuthorization();
-        group.MapPut("/", async (UpdateNovelDto dto, INovelService service) =>
+        group.MapPut("/", async (UpdateNovelDto dto, [FromServices] INovelService service) =>
         {
             await service.UpdateNovelAsync(dto);
             return Results.Ok();
@@ -33,24 +33,23 @@ public static class NovelsEndpoints
 
         group.MapDelete("/{id:guid}", async (
             Guid id,
-            INovelService service) =>
+            [FromServices] INovelService service) =>
         {
             await service.DeleteNovelAsync(id);
             return Results.Ok();
         }).RequireAuthorization();
-
     }
     // --- CÁC HÀM XỬ LÝ (HANDLERS) ---
 
     // Chú ý: Ta tiêm INovelService trực tiếp vào tham số hàm
-    static async Task<IResult> GetNovelsHome(INovelService novelService)
+    static async Task<IResult> GetNovelsHome([FromServices] INovelService novelService)
     {
         // Lấy 10 truyện
         var novels = await novelService.GetNovelsHomeAsync(10);
         return Results.Ok(novels);
     }
 
-    static async Task<IResult> GetNovelById(Guid id, INovelService novelService)
+    static async Task<IResult> GetNovelById(Guid id, [FromServices] INovelService novelService)
     {
         var novel = await novelService.GetNovelByIdAsync(id);
 
@@ -58,8 +57,10 @@ public static class NovelsEndpoints
     }
 
     // Hàm tạo mới có Validation
-    static async Task<IResult> CreateNovel([FromBody] CreateNovelDto dto, INovelService service,
-        IValidator<CreateNovelDto> validator)
+    static async Task<IResult> CreateNovel(
+        [FromBody] CreateNovelDto dto,
+        [FromServices] INovelService service,
+        [FromServices] IValidator<CreateNovelDto> validator)
     {
         // 1. Kiểm tra tính hợp lệ
         var validationResult = await validator.ValidateAsync(dto);

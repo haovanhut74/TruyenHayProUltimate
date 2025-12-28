@@ -16,12 +16,12 @@ public static class CategoryEndpoints
         {
             var categories = await repo.GetAllAsync();
             // Chuyển đổi sang DTO
-            var dtos = categories.Select(c => new CategoryDto 
-            { 
-                Id = c.Id, 
-                Name = c.Name 
+            var dtos = categories.Select(c => new CategoryDto
+            {
+                Id = c.Id,
+                Name = c.Name
             }).ToList();
-            
+
             return Results.Ok(dtos);
         });
 
@@ -29,7 +29,7 @@ public static class CategoryEndpoints
         group.MapPost("/", CreateCategory);
     }
 
-    static async Task<IResult> CreateCategory(CreateCategoryDto dto, ICategoryService service)
+    static async Task<IResult> CreateCategory(CreateCategoryDto dto, [FromServices] ICategoryService service)
     {
         var id = await service.CreateCategoryAsync(dto);
         return Results.Ok(id);
