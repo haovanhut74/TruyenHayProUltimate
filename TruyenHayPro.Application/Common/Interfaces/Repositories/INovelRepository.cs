@@ -21,5 +21,5 @@ public interface INovelRepository
 
     Task DeleteAsync(Novel novel);
     
-    Task<List<Novel>> GetAllAsync();
+    // Task<List<Novel>> GetAllAsync();
 }
