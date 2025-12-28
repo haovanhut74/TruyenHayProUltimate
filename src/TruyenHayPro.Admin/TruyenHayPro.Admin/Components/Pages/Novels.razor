@@ -1,0 +1,124 @@
+﻿@page "/novels"
+@using TruyenHayPro.Domain.Common.Entities
+@using TruyenHayPro.Application.Common.Interfaces.Repositories
+@using Microsoft.AspNetCore.Authorization
+@using TruyenHayPro.Domain.Enums
+
+@* Chặn người lạ, chỉ Admin mới được vào *@
+@attribute [Authorize]
+
+@* Gọi Repository để lấy dữ liệu trực tiếp *@
+@inject INovelRepository NovelRepository
+@inject NavigationManager Navigation
+
+<div class = "d-flex justify-content-between align-items-center mb-4">
+    <h3>Quản lý Kho Truyện</h3>
+    <a href = "novels/create" class = "btn btn-success">
+        <i class = "bi bi-plus-lg"></i> Thêm Truyện Mới
+    </a>
+</div>
+
+@if (_novels == null)
+{
+    <div class = "text-center">
+        <div class = "spinner-border text-primary" role = "status">
+            <span class = "visually-hidden">Loading...</span>
+        </div>
+        <p>Đang tải dữ liệu...</p>
+    </div>
+}
+else if (!_novels.Any())
+{
+    <div class = "alert alert-warning">Chưa có truyện nào trong hệ thống.</div>
+}
+else
+{
+    <div class = "card shadow-sm">
+        <div class = "card-body p-0">
+            <table class = "table table-hover table-striped mb-0">
+                <thead class = "table-dark">
+                <tr>
+                    <th style = "width: 50px">#</th>
+                    <th>Tên Truyện</th>
+                    <th>Tác giả</th>
+                    <th>Trạng thái</th>
+                    <th>Lượt xem</th>
+                    <th class = "text-end">Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var novel in _novels)
+                {
+                    <tr>
+                        <td>
+                            @* Nếu có ảnh bìa thì hiện, không thì hiện ảnh mặc định *@
+                            @if (!string.IsNullOrEmpty(novel.CoverImage))
+                            {
+                                <img src = "@novel.CoverImage" alt = "Cover" width = "40" height = "60" style = "object-fit: cover; border-radius: 4px"/>
+                            }
+                            else
+                            {
+                                <div style = "width: 40px; height: 60px; background: #eee; border-radius: 4px"></div>
+                            }
+                        </td>
+                        <td>
+                            <div class = "fw-bold">@novel.Title</div>
+                            <small class = "text-muted">ID: @novel.Id</small>
+                        </td>
+                        <td>@novel.Author</td>
+                        <td>
+                            @* Hiển thị trạng thái bằng Badge màu *@
+                            @switch (novel.Status)
+                            {
+                                case NovelStatus.Completed:
+                                    <span class = "badge bg-success">Đã hoàn thành</span>
+                                    break;
+                                case NovelStatus.OnGoing:
+                                    <span class = "badge bg-primary">Đang ra</span>
+                                    break;
+                                case NovelStatus.Paused:
+                                    <span class = "badge bg-secondary">Tạm ngưng</span>
+                                    break;
+                                case NovelStatus.Droped:
+                                    break;
+                                default:
+                                    <span class = "badge bg-secondary">Ngừng ra</span>
+                                    break;
+                            }
+                        </td>
+                        <td>@novel.Views.ToString("N0")</td>
+                        <td class = "text-end">
+                            <a href = "novels/edit/@novel.Id" class = "btn btn-sm btn-outline-primary me-2" title = "Sửa">
+                                <i class = "bi bi-pencil"></i>
+                            </a>
+                            <button class = "btn btn-sm btn-outline-danger" title = "Xóa" @onclick = "() => DeleteNovel(novel.Id, novel.Title)">
+                                <i class = "bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Novel>? _novels;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Load danh sách truyện khi vào trang
+        // Lưu ý: Hàm GetAllAsync() trả về IQueryable hoặc List tùy vào Repository của bạn
+        // Nếu Repository chưa có hàm này, chúng ta sẽ thêm ở Bước 2
+        var result = await NovelRepository.GetAllAsync();
+        _novels = result.OrderByDescending(n => n.CreatedDate).ToList();
+    }
+
+    private async Task DeleteNovel(Guid id, string title)
+    {
+        // Tạm thời để hàm trống, mình sẽ làm chức năng Xóa có confirm ở bước sau
+        Console.WriteLine($"Muốn xóa truyện: {title}");
+    }
+
+}

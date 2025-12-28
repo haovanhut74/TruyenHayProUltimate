@@ -57,5 +57,13 @@ public class NovelRepository : INovelRepository
         _context.Novels.Remove(novel);
         await _context.SaveChangesAsync();
     }
-    
+
+    public async Task<List<Novel>> GetAllAsync()
+    {
+        return await _context.Novels
+            .AsNoTracking() // Admin chỉ xem danh sách nên dùng AsNoTracking cho nhẹ
+            .Include(n => n.Category) // Lấy kèm tên Thể loại (nếu cần hiển thị)
+            .OrderByDescending(n => n.CreatedDate) // Sắp xếp mới nhất lên đầu
+            .ToListAsync();
+    }
 }

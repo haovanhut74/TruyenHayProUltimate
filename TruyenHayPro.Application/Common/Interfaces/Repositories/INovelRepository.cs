@@ -20,4 +20,6 @@ public interface INovelRepository
     Task UpdateAsync(Novel novel);
 
     Task DeleteAsync(Novel novel);
+    
+    Task<List<Novel>> GetAllAsync();
 }
