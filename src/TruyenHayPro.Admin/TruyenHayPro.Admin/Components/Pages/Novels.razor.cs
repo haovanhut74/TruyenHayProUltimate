@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using TruyenHayPro.Application.DTO;
-using TruyenHayPro.Domain.Common.Entities;
 
 namespace TruyenHayPro.Admin.Components.Pages;
 
 public partial class Novels : ComponentBase
 {
     private List<NovelDto>? _novels;
-    
-    
+
+
     protected override async Task OnInitializedAsync()
     {
         // Call Service instead of Repository
