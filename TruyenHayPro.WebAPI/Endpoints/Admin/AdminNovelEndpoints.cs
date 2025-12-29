@@ -9,20 +9,22 @@ public static class AdminNovelEndpoints
 {
     public static void MapAdminNovelEndpoints(this IEndpointRouteBuilder app)
     {
-        // Gom nhóm API Admin lại
         var group = app.MapGroup("/api/admin/novels")
-            .RequireAuthorization(); // Bắt buộc đăng nhập (sau này thêm Role Admin)
+            .RequireAuthorization();
 
-        // GET: /api/admin/novels/all
-        group.MapGet("/all", async (IAdminNovelService service) =>
+        // 1. GET: Thêm [FromServices]
+        group.MapGet("/all", async ([FromServices] IAdminNovelService service) =>
         {
             var novels = await service.GetAllNovelsAsync();
             return Results.Ok(novels);
         });
 
-        // POST: /api/admin/novels (Tạo mới)
+        // 2. POST: Thêm [FromServices] cho cả service và validator
         group.MapPost("/",
-            async ([FromBody] CreateNovelDto dto, IAdminNovelService service, IValidator<CreateNovelDto> validator) =>
+            async (
+                [FromBody] CreateNovelDto dto,
+                [FromServices] IAdminNovelService service,
+                [FromServices] IValidator<CreateNovelDto> validator) =>
             {
                 var validationResult = await validator.ValidateAsync(dto);
                 if (!validationResult.IsValid) return Results.BadRequest(validationResult.ToDictionary());
@@ -31,15 +33,15 @@ public static class AdminNovelEndpoints
                 return Results.Ok(id);
             });
 
-        // PUT: /api/admin/novels (Cập nhật)
-        group.MapPut("/", async (UpdateNovelDto dto, IAdminNovelService service) =>
+        // 3. PUT: Thêm [FromServices]
+        group.MapPut("/", async (UpdateNovelDto dto, [FromServices] IAdminNovelService service) =>
         {
             await service.UpdateNovelAsync(dto);
             return Results.Ok();
         });
 
-        // DELETE: /api/admin/novels/{id} (Xóa)
-        group.MapDelete("/{id:guid}", async (Guid id, IAdminNovelService service) =>
+        // 4. DELETE: Thêm [FromServices]
+        group.MapDelete("/{id:guid}", async (Guid id, [FromServices] IAdminNovelService service) =>
         {
             await service.DeleteNovelAsync(id);
             return Results.Ok();

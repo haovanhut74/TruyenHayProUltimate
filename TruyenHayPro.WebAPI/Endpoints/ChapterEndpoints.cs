@@ -15,7 +15,7 @@ public static class ChapterEndpoints
     {
         var group = app.MapGroup("/api/chapters");
 
-        group.MapPost("/", async (ISender sender, CreateChapterDto dto) =>
+        group.MapPost("/", async ([FromServices] ISender sender, CreateChapterDto dto) =>
         {
             var result = await sender.Send(new CreateChapterCommand(dto));
             return result.IsSuccess
@@ -24,20 +24,20 @@ public static class ChapterEndpoints
         });
         // Thêm vào MapChapterEndpoints
         group.MapGet("/{id:guid}", GetChapterDetail);
-        group.MapPut("/", async (ISender sender, [FromBody] UpdateChapterDto dto) =>
+        group.MapPut("/", async ([FromServices] ISender sender, [FromBody] UpdateChapterDto dto) =>
         {
             var result = await sender.Send(new UpdateChapterCommand(dto));
             return result.IsSuccess ? Results.Ok(result) : Results.BadRequest(result);
         }).RequireAuthorization();
-        
+
         group.MapGet("/novel/{novelId:guid}", async (Guid novelId, ISender mediator) =>
         {
             var result = await mediator.Send(new GetChaptersByNovelQuery(novelId));
             return Results.Ok(result);
         });
-        
+
         // THÊM ENDPOINT DELETE:
-        group.MapDelete("/{id:guid}", async (Guid id, ISender mediator) =>
+        group.MapDelete("/{id:guid}", async (Guid id, [FromServices] ISender mediator) =>
             {
                 var result = await mediator.Send(new DeleteChapterCommand(id));
 
@@ -50,7 +50,7 @@ public static class ChapterEndpoints
     // Handler xử lý
     private static async Task<IResult> GetChapterDetail(
         Guid id,
-        IChapterRepository chapterRepo)
+        [FromServices] IChapterRepository chapterRepo)
     {
         var chapter = await chapterRepo.GetChapterDetailAsync(id);
         if (chapter == null) return Results.NotFound();
